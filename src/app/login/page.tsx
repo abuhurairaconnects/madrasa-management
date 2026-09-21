@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   Building,
   Sparkles,
@@ -17,6 +18,7 @@ import {
   HelpCircle,
   KeyRound,
   AlertCircle,
+  Users,
 } from "lucide-react";
 import { useRole, UserRole } from "@/context/RoleContext";
 
@@ -293,9 +295,6 @@ function LoginForm() {
                   <label className="text-xs font-semibold text-zinc-300">
                     পাসওয়ার্ড / পিন
                   </label>
-                  <span className="text-[11px] text-zinc-400">
-                    (ডিফল্ট: 123456)
-                  </span>
                 </div>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-zinc-400 absolute left-3 top-3" />
@@ -343,46 +342,30 @@ function LoginForm() {
               </button>
             </div>
 
-            {/* Suggested Demo Section */}
-            {demoInstitutions.length > 0 && (
-              <div className="pt-3 border-t border-zinc-800/80 space-y-2">
-                <div className="flex items-center justify-between text-xs text-zinc-400">
-                  <span className="font-semibold text-emerald-300">
-                    সাজেস্টেড ডেমো মাদ্রাসা (১-ক্লিকে টেস্ট লগইন):
-                  </span>
-                  <span className="text-[10px] bg-emerald-950 border border-emerald-800 text-emerald-400 px-1.5 py-0.5 rounded">
-                    ডেমো মোড
-                  </span>
+            {/* Guardian Portal Link */}
+            <div className="pt-3 border-t border-zinc-800/80">
+              <Link
+                href="/guardian/login"
+                className="flex items-center justify-between p-3 rounded-2xl bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/60 transition group"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-900/80 text-emerald-300 flex items-center justify-center">
+                    <Users className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-white group-hover:text-emerald-300 transition">
+                      অভিভাবক পোর্টাল
+                    </h4>
+                    <p className="text-[11px] text-zinc-400">
+                      সন্তানের ছবক, হাজিরা ও ফি দেখতে ক্লিক করুন
+                    </p>
+                  </div>
                 </div>
-
-                <div className="space-y-2">
-                  {demoInstitutions.slice(0, 2).map((inst, index) => (
-                    <div
-                      key={inst.id}
-                      onClick={() => handleDemoLogin(inst)}
-                      className="p-3 rounded-2xl bg-zinc-800/50 hover:bg-emerald-900/40 border border-zinc-700/60 hover:border-emerald-500/80 cursor-pointer transition flex items-center justify-between group"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-900/80 text-emerald-300 flex items-center justify-center font-bold text-xs">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-xs text-white group-hover:text-emerald-300 transition">
-                            {inst.nameBn}
-                          </h4>
-                          <p className="text-[11px] text-zinc-400">
-                            {inst.address} {inst.muhtamimName ? `• মুহতামিম: ${inst.muhtamimName}` : ""}
-                          </p>
-                        </div>
-                      </div>
-                      <span className="text-xs text-emerald-400 font-semibold group-hover:translate-x-0.5 transition shrink-0">
-                        প্রবেশ →
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                <span className="text-xs text-emerald-400 font-semibold group-hover:translate-x-0.5 transition shrink-0">
+                  প্রবেশ →
+                </span>
+              </Link>
+            </div>
           </div>
         ) : (
           /* ==========================================================
