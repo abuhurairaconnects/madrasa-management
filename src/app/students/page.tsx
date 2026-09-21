@@ -232,8 +232,8 @@ export default function StudentsPage() {
                         <span
                           className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium w-max ${
                             std.isBoarding
-                              ? "bg-blue-50 text-blue-700 border border-blue-200"
-                              : "bg-zinc-100 text-zinc-600"
+                              ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800"
+                              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700"
                           }`}
                         >
                           <Home className="w-2.5 h-2.5" />

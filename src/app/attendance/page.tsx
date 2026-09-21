@@ -223,7 +223,7 @@ export default function AttendancePage() {
                             className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition cursor-pointer ${
                               currentStatus === "PRESENT"
                                 ? "bg-emerald-600 text-white shadow-xs"
-                                : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                             }`}
                           >
                             উপস্থিত
@@ -234,7 +234,7 @@ export default function AttendancePage() {
                             className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition cursor-pointer ${
                               currentStatus === "ABSENT"
                                 ? "bg-red-600 text-white shadow-xs"
-                                : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                             }`}
                           >
                             অনুপস্থিত
@@ -245,7 +245,7 @@ export default function AttendancePage() {
                             className={`px-2.5 py-1.5 rounded-lg font-bold text-[11px] transition cursor-pointer ${
                               currentStatus === "LEAVE"
                                 ? "bg-blue-600 text-white shadow-xs"
-                                : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                             }`}
                           >
                             ছুটি

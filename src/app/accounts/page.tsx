@@ -188,10 +188,10 @@ export default function AccountsPage() {
             </span>
             <button
               onClick={() => setSelectedFund("ALL")}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                 selectedFund === "ALL"
-                  ? "bg-emerald-700 text-white"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
               }`}
             >
               সকল ফান্ড
@@ -200,10 +200,10 @@ export default function AccountsPage() {
               <button
                 key={f.id}
                 onClick={() => setSelectedFund(f.id)}
-                className={`px-3 py-1 rounded-xl text-xs font-semibold ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                   selectedFund === f.id
-                    ? "bg-emerald-700 text-white"
-                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                 }`}
               >
                 {f.nameBn.split(" ")[0]}
@@ -214,30 +214,30 @@ export default function AccountsPage() {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setSelectedType("ALL")}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                 selectedType === "ALL"
-                  ? "bg-zinc-800 text-white"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  ? "bg-zinc-800 dark:bg-zinc-700 text-white shadow-sm"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
               }`}
             >
               সব (জমা/খরচ)
             </button>
             <button
               onClick={() => setSelectedType("INCOME")}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                 selectedType === "INCOME"
-                  ? "bg-emerald-700 text-white"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
               }`}
             >
               শুধুমাত্র জমা
             </button>
             <button
               onClick={() => setSelectedType("EXPENSE")}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                 selectedType === "EXPENSE"
-                  ? "bg-red-700 text-white"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  ? "bg-red-600 text-white shadow-sm"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
               }`}
             >
               শুধুমাত্র খরচ
