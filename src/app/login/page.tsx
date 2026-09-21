@@ -19,6 +19,7 @@ import {
   KeyRound,
   AlertCircle,
   Users,
+  Download,
 } from "lucide-react";
 import { useRole, UserRole } from "@/context/RoleContext";
 
@@ -365,6 +366,32 @@ function LoginForm() {
                   প্রবেশ →
                 </span>
               </Link>
+            </div>
+
+            {/* Android APK Direct Download Button */}
+            <div className="pt-2">
+              <a
+                href="/madrasa.apk"
+                download="madrasa.apk"
+                className="flex items-center justify-between p-3 rounded-2xl bg-amber-950/40 hover:bg-amber-900/50 border border-amber-800/50 transition group"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-amber-900/80 text-amber-300 flex items-center justify-center">
+                    <Download className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-white group-hover:text-amber-300 transition">
+                      অ্যান্ড্রয়েড অ্যাপ ডাউনলোড (APK)
+                    </h4>
+                    <p className="text-[11px] text-zinc-400">
+                      ফোনে সরাসরি ইনস্টল করতে এখানে ক্লিক করুন (৩.২ MB)
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs text-amber-400 font-semibold group-hover:translate-y-0.5 transition shrink-0">
+                  ডাউনলোড ↓
+                </span>
+              </a>
             </div>
           </div>
         ) : (
