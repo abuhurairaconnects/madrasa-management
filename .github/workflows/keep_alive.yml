@@ -1,6 +1,9 @@
 name: Keep Alive 24/7
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     # Runs every 10 minutes to prevent Render from going to sleep
     - cron: '*/10 * * * *'
