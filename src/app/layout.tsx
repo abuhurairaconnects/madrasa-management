@@ -13,8 +13,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "মাদরাসা ম্যানেজমেন্ট অ্যাপ",
-  description: "মাদরাসার জন্য পূর্ণাঙ্গ ও স্বয়ংক্রিয় ডিজিটাল ম্যানেজমেন্ট প্ল্যাটফর্ম",
+  title: "মাদ্রাসা ম্যানেজমেন্ট অ্যাপ",
+  description: "মাদ্রাসার জন্য পূর্ণাঙ্গ ও স্বয়ংক্রিয় ডিজিটাল ম্যানেজমেন্ট প্ল্যাটফর্ম",
   manifest: "/manifest.json",
 };
 
