@@ -1,0 +1,23 @@
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const assetLinks = [
+    {
+      relation: ["delegate_permission/common.handle_all_urls"],
+      target: {
+        namespace: "android_app",
+        package_name: "com.onrender.madrasa_management_mlo9.twa",
+        sha256_cert_fingerprints: [
+          "F0:8F:AA:30:62:34:DD:FB:3A:6D:7C:82:71:51:6E:48:DD:34:3D:AF:CA:60:08:0E:DD:57:B5:DE:7D:B2:1D:D7"
+        ]
+      }
+    }
+  ];
+
+  return NextResponse.json(assetLinks, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=86400',
+    },
+  });
+}

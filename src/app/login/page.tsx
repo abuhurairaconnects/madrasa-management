@@ -371,7 +371,7 @@ function LoginForm() {
             {/* Android APK Direct Download Button */}
             <div className="pt-2">
               <a
-                href="/madrasa.apk"
+                href="/api/download-apk"
                 download="madrasa.apk"
                 className="flex items-center justify-between p-3 rounded-2xl bg-amber-950/40 hover:bg-amber-900/50 border border-amber-800/50 transition group"
               >
