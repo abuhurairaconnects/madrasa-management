@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { RoleProvider } from "@/context/RoleContext";
 import { AppShell } from "@/components/layout/AppShell";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 export const viewport: Viewport = {
   themeColor: "#065f46",
@@ -28,6 +29,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="h-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex overflow-hidden">
+        <ServiceWorkerRegister />
         <RoleProvider>
           <AppShell>{children}</AppShell>
         </RoleProvider>
