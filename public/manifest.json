@@ -1,6 +1,6 @@
 {
-  "name": "মাদরাসা ম্যানেজমেন্ট ও অটোমেশন সিস্টেম",
-  "short_name": "মাদরাসা অ্যাপ",
+  "name": "মাদরাসা ম্যানেজমেন্ট অ্যাপ",
+  "short_name": "মাদরাসা ম্যানেজমেন্ট অ্যাপ",
   "description": "মাদরাসার জন্য পূর্ণাঙ্গ ও স্বয়ংক্রিয় ডিজিটাল ম্যানেজমেন্ট প্ল্যাটফর্ম",
   "start_url": "/",
   "id": "/",
@@ -9,6 +9,41 @@
   "background_color": "#065f46",
   "theme_color": "#065f46",
   "orientation": "portrait-primary",
+  "lang": "bn",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "লগইন পোর্টাল",
+      "short_name": "লগইন",
+      "description": "মাদরাসা ড্যাশবোর্ডে লগইন করুন",
+      "url": "/login",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "অভিভাবক পোর্টাল",
+      "short_name": "অভিভাবক",
+      "description": "অভিভাবকদের জন্য রেজাল্ট ও ফি দেখার পোর্টাল",
+      "url": "/guardian/login",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -35,14 +70,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "ড্যাশবোর্ড ভিউ"
+      "label": "মাদরাসা ম্যানেজমেন্ট ড্যাশবোর্ড ভিউ"
     },
     {
       "src": "/screenshot-mobile.png",
       "sizes": "720x1280",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "মোবাইল ভিউ"
+      "label": "মাদরাসা ম্যানেজমেন্ট মোবাইল ভিউ"
     }
   ]
 }
