@@ -1,0 +1,15 @@
+name: Keep Alive 24/7
+
+on:
+  schedule:
+    # Runs every 10 minutes to prevent Render from going to sleep
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Madrasa App
+        run: |
+          curl -sS -I https://madrasa-management-mlo9.onrender.com/login
