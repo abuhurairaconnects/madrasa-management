@@ -82,8 +82,12 @@ export default function GuardianLoginPage() {
 
         {/* Header Branding */}
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-emerald-600/20 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-xl shadow-emerald-950/60">
-            <GraduationCap className="w-8 h-8 text-emerald-400" />
+          <div className="w-20 h-20 mx-auto mb-3">
+            <img
+              src="/logo.png"
+              alt="মাদ্রাসা লোগো"
+              className="w-20 h-20 rounded-full object-cover shadow-2xl border-2 border-amber-400/60"
+            />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">অভিভাবক পোর্টাল লগইন</h1>
           <p className="text-emerald-200/70 text-xs sm:text-sm mt-1">

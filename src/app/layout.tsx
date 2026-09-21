@@ -27,6 +27,8 @@ export default function RootLayout({
     <html lang="bn" className="h-full">
       <head>
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/favicon-64.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className="h-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex overflow-hidden">
         <ServiceWorkerRegister />

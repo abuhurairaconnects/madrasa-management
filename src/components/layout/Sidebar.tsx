@@ -359,9 +359,11 @@ export function Sidebar() {
         {/* Mobile Header with Brand & Close Button */}
         <div className="p-4 border-b border-emerald-900/80 bg-emerald-900/40 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-400 flex items-center justify-center text-emerald-950 shadow-md font-bold text-lg">
-              م
-            </div>
+            <img
+              src="/logo.png"
+              alt="মাদ্রাসা লোগো"
+              className="w-10 h-10 rounded-full object-cover shadow-md border border-amber-400/50 shrink-0"
+            />
             <div>
               <h1 className="font-bold text-sm tracking-wide text-white leading-tight">
                 মাদ্রাসা ম্যানেজমেন্ট
@@ -436,9 +438,11 @@ export function Sidebar() {
         {/* Brand Header */}
         <div className="p-4 border-b border-emerald-900/80 bg-emerald-900/40">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-400 flex items-center justify-center text-emerald-950 shadow-md font-bold text-xl shrink-0">
-              م
-            </div>
+            <img
+              src="/logo.png"
+              alt="মাদ্রাসা লোগো"
+              className="w-10 h-10 rounded-full object-cover shadow-md border border-amber-400/50 shrink-0"
+            />
             {!isCollapsed && (
               <div className="overflow-hidden">
                 <h1 className="font-bold text-base tracking-wide text-white leading-tight truncate">

@@ -218,9 +218,11 @@ function LoginForm() {
       {/* Top Header */}
       <div className="max-w-3xl mx-auto w-full flex items-center justify-between py-2 border-b border-emerald-800/40">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-400 flex items-center justify-center text-emerald-950 shadow-md font-bold text-xl">
-            م
-          </div>
+          <img
+            src="/logo.png"
+            alt="মাদ্রাসা লোগো"
+            className="w-11 h-11 rounded-full object-cover shadow-md border border-amber-400/50 shrink-0"
+          />
           <div>
             <h1 className="font-bold text-base sm:text-lg text-white leading-tight">
               মাদ্রাসা ম্যানেজমেন্ট সিস্টেম
