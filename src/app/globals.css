@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Noto Sans Bengali", "SolaimanLipi", sans-serif;
+  }
+}
+
+.font-arabic {
+  font-family: "Traditional Arabic", "Amiri", "Scheherazade New", "Lateef", serif;
+}
+
+/* ==========================================================
+   HIGH-CONTRAST FORM & INPUT STYLES (NO MORE WHITE-ON-WHITE)
+   ========================================================== */
+input, select, textarea {
+  color: #09090b;
+}
+
+@media (prefers-color-scheme: dark) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    background-color: #18181b !important; /* zinc-900 */
+    color: #ffffff !important;
+    border-color: #3f3f46 !important; /* zinc-700 */
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #a1a1aa !important; /* zinc-400 */
+  }
+
+  label {
+    color: #e4e4e7 !important; /* zinc-200 */
+  }
+
+  select option {
+    background-color: #18181b !important;
+    color: #ffffff !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    background-color: #ffffff !important;
+    color: #09090b !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #64748b !important;
+  }
+
+  label {
+    color: #1e293b !important;
+  }
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+  border-color: #3f3f46 !important;
+}
+
+.dark label {
+  color: #f4f4f5;
+}
+
+.dark select option {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+}
+
+/* Global High-Contrast Text Fixes in Dark Mode */
+.dark .text-zinc-400:not([class*="dark:text-"]) {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+.dark .text-zinc-500:not([class*="dark:text-"]) {
+  color: #cbd5e1 !important; /* slate-300 - clearly readable */
+}
+
+.dark .text-zinc-600:not([class*="dark:text-"]) {
+  color: #e2e8f0 !important; /* slate-200 - high contrast */
+}
+
+.dark .text-zinc-700:not([class*="dark:text-"]) {
+  color: #f1f5f9 !important; /* slate-100 - bright text */
+}
+
+.dark .text-zinc-800:not([class*="dark:text-"]) {
+  color: #f8fafc !important; /* slate-50 */
+}
+
+.dark .text-zinc-900:not([class*="dark:text-"]) {
+  color: #ffffff !important; /* white */
+}
+
+.dark th:not([class*="dark:text-"]) {
+  color: #e2e8f0 !important;
+}
+
+html.dark,
+html.dark body {
+  background-color: #09090b !important;
+  color: #f4f4f5 !important;
+}
+
+html.light,
+html.light body {
+  background-color: #f8fafc !important;
+  color: #09090b !important;
+}
+
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light label {
+  color: #1e293b !important;
+}
+
+html.light select option {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Print Specific Rules */
+@media print {
+  aside, header, nav, button {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #pos-thermal-slip {
+    width: 72mm !important;
+    margin: 0 !important;
+    padding: 2mm !important;
+    box-shadow: none !important;
+  }
+}

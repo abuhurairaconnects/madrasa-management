@@ -1,0 +1,624 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./madrasa.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Institution {
+  id                    String                @id @default(uuid())
+  code                  String                @unique // যেমন: JAMIA-01
+  nameBn                String                // যেমন: জামিয়া ইসলামিয়া দারুল উলূম
+  nameEn                String                // Jamia Islamia Darul Uloom
+  arabicName            String?               // جامعة دار العلوم
+  address               String
+  phone                 String
+  email                 String?
+  muhtamimName          String?               // মুহতামিমের নাম
+  establishedYear       String?
+  logo                  String?
+  receiptFooter         String?               // রসিদের নিচে সতর্কবাণী বা দোয়ার বাক্য
+  
+  // Multi-Tenant SaaS Resource & Subscription Tracking
+  studentLimit          Int                   @default(2000)
+  smsBalance            Int                   @default(1000)
+  storageUsedBytes      Int                   @default(0)
+  subscriptionStatus    String                @default("ACTIVE") // ACTIVE, SUSPENDED, TRIAL, EXPIRED
+  subscriptionPlan      String                @default("STANDARD") // STARTER, STANDARD, ENTERPRISE
+  subscriptionExpiresAt DateTime?
+  
+  // Relations - All 8 Modules
+  users                 User[]
+  departments           Department[]
+  classes               ClassSession[]
+  subjects              Subject[]
+  classRoutines         ClassRoutine[]
+  students              Student[]
+  hifzRecords           HifzRecord[]
+  tajweedRecords        TajweedRecord[]
+  namazRecords          NamazRecord[]
+  amalRecords           AmalRecord[]
+  invoices              FeeInvoice[]
+  funds                 Fund[]
+  transactions          Transaction[]
+  staffSalaries         StaffSalary[]
+  hostelBuildings       HostelBuilding[]
+  hostelRooms           HostelRoom[]
+  hostelBeds            HostelBed[]
+  mealRecords           MealRecord[]
+  books                 Book[]
+  bookIssues            BookIssue[]
+  madrasaAssets         MadrasaAsset[]
+  inventoryItems        InventoryItem[]
+  attendances           Attendance[]
+  smsLogs               SmsLog[]
+  guardians             Guardian[]
+  notices               Notice[]
+  paymentTransactions   PaymentTransaction[]
+  exams                 Exam[]
+  examMarks             ExamMark[]
+  auditLogs             AuditLog[]
+
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+}
+
+model User {
+  id             String         @id @default(uuid())
+  institutionId  String?        // NULL for SUPER_ADMIN
+  institution    Institution?   @relation(fields: [institutionId], references: [id])
+  name           String
+  username       String         @unique
+  password       String?        @default("123456")
+  phone          String?
+  role           String         @default("TEACHER") // SUPER_ADMIN, MUHTAMIM, NAZIM_E_TALIMAT, ACCOUNTANT, TEACHER, HOSTEL_SUPER, PARENT
+  departmentId   String?
+  createdAt      DateTime       @default(now())
+  
+  hifzRecords    HifzRecord[]
+  taughtSubjects Subject[]
+  classRoutines  ClassRoutine[]
+  staffSalaries  StaffSalary[]
+  auditLogs      AuditLog[]
+}
+
+model Department {
+  id            String         @id @default(uuid())
+  institutionId String
+  institution   Institution    @relation(fields: [institutionId], references: [id])
+  nameBn        String         // নূরানী, নাজেরা, হিফজুল কুরআন, কিতাব বিভাগ
+  nameEn        String
+  code          String
+  classes       ClassSession[]
+  students      Student[]
+  createdAt     DateTime       @default(now())
+
+  @@unique([institutionId, code])
+}
+
+model ClassSession {
+  id            String         @id @default(uuid())
+  institutionId String
+  institution   Institution    @relation(fields: [institutionId], references: [id])
+  nameBn        String         // জামাত যেমন: হিফজ ৩য় গ্রুপ, মিযান, কাফিয়া, তাকমীল
+  nameEn        String
+  departmentId  String
+  department    Department     @relation(fields: [departmentId], references: [id])
+  monthlyFee    Float          @default(0)
+  boardingFee   Float          @default(0)
+  students      Student[]
+  attendances   Attendance[]
+  subjects      Subject[]
+  classRoutines ClassRoutine[]
+  createdAt     DateTime       @default(now())
+}
+
+model Guardian {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  name          String
+  phone         String
+  pin           String       @default("1234") // সহজ ৪ ডিজিটের পিন
+  students      Student[]
+  createdAt     DateTime     @default(now())
+
+  @@unique([institutionId, phone])
+}
+
+model Student {
+  id                  String           @id @default(uuid())
+  institutionId       String
+  institution         Institution      @relation(fields: [institutionId], references: [id])
+  studentId           String           // Roll / Reg No (e.g. STD-2026-001)
+  nameBn              String           // মোহাম্মদ আব্দুল্লাহ
+  nameEn              String?
+  fatherName          String
+  motherName          String?
+  guardianPhone       String
+  emergencyPhone      String?
+  guardianId          String?
+  guardian            Guardian?        @relation(fields: [guardianId], references: [id])
+  village             String?
+  district            String?
+  bloodGroup          String?
+  birthDate           String?
+  admissionDate       String
+  isBoarding          Boolean          @default(false) // আবাসিক কি না
+  isOrphan            Boolean          @default(false) // এতিম কি না
+  isEligibleForLillah  Boolean          @default(false) // লিল্লাহ ফান্ড পাওয়ার যোগ্য কি না
+  monthlyTuitionFee   Float            @default(0)
+  monthlyBoardingFee  Float            @default(0)
+  status              String           @default("ACTIVE") // ACTIVE, INACTIVE, ALUMNI
+  
+  departmentId        String
+  department          Department       @relation(fields: [departmentId], references: [id])
+  classId             String
+  classSession        ClassSession     @relation(fields: [classId], references: [id])
+  
+  hifzRecords         HifzRecord[]
+  tajweedRecords      TajweedRecord[]
+  namazRecords        NamazRecord[]
+  amalRecords         AmalRecord[]
+  invoices            FeeInvoice[]
+  attendances         Attendance[]
+  examMarks           ExamMark[]
+  hostelBeds          HostelBed[]
+  mealRecords         MealRecord[]
+  bookIssues          BookIssue[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  @@unique([institutionId, studentId])
+}
+
+// -------------------------------------------------------------
+// ৩. Academic Models (বিষয়, রুটিন, পরীক্ষা ও ফলাফল)
+// -------------------------------------------------------------
+
+model Subject {
+  id            String         @id @default(uuid())
+  institutionId String
+  institution   Institution    @relation(fields: [institutionId], references: [id])
+  classId       String
+  classSession  ClassSession   @relation(fields: [classId], references: [id])
+  nameBn        String         // যেমন: কুরআন মাজীদ, মিজানুস সরফ, নূরুল ঈযাহ
+  nameEn        String?
+  code          String?
+  totalMarks    Int            @default(100)
+  passMarks     Int            @default(33)
+  teacherId     String?
+  teacher       User?          @relation(fields: [teacherId], references: [id])
+  routines      ClassRoutine[]
+  examMarks     ExamMark[]
+  createdAt     DateTime       @default(now())
+
+  @@unique([classId, nameBn])
+}
+
+model ClassRoutine {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  classId       String
+  classSession  ClassSession @relation(fields: [classId], references: [id])
+  subjectId     String
+  subject       Subject      @relation(fields: [subjectId], references: [id])
+  teacherId     String?
+  teacher       User?        @relation(fields: [teacherId], references: [id])
+  dayOfWeek     String       // SATURDAY, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY
+  periodNumber  Int          // ১, ২, ৩...
+  startTime     String       // e.g. 08:00 AM
+  endTime       String       // e.g. 08:45 AM
+  roomNo        String?
+  createdAt     DateTime     @default(now())
+}
+
+model Exam {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  titleBn       String       // প্রথম সাময়িক পরীক্ষা ২০২৬, বার্ষিক পরীক্ষা ২০২৬
+  titleEn       String?
+  term          String       // FIRST_TERM, MID_TERM, ANNUAL, WEEKLY
+  year          Int          @default(2026)
+  startDate     String
+  endDate       String
+  status        String       @default("PUBLISHED") // UPCOMING, ONGOING, COMPLETED, PUBLISHED
+  examMarks     ExamMark[]
+  createdAt     DateTime     @default(now())
+}
+
+model ExamMark {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  examId        String
+  exam          Exam         @relation(fields: [examId], references: [id])
+  studentId     String
+  student       Student      @relation(fields: [studentId], references: [id])
+  subjectId     String
+  subject       Subject      @relation(fields: [subjectId], references: [id])
+  writtenMarks  Float        @default(0)
+  vivaMarks     Float        @default(0)
+  totalMarks    Float        @default(0)
+  grade         String       // MUMTAZ, JAYYID_JIDDAN, JAYYID, MAKBUL, RASIB
+  remarks       String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([examId, studentId, subjectId])
+}
+
+// -------------------------------------------------------------
+// ৪. Islamic Education & Tarbiyah Models (হিফজ, তাজবীদ, নামাজ ও আমল)
+// -------------------------------------------------------------
+
+model HifzRecord {
+  id                  String       @id @default(uuid())
+  institutionId       String
+  institution         Institution  @relation(fields: [institutionId], references: [id])
+  studentId           String
+  student             Student      @relation(fields: [studentId], references: [id])
+  date                String       // YYYY-MM-DD
+  
+  // দৈনিক ছবক (Daily Sabaq)
+  sabaqPara           Int?         // পারা নম্বর (১-৩০)
+  sabaqSurah          String?      // সুরা নাম
+  sabaqPage           Int?         // পৃষ্ঠা নম্বর
+  sabaqQuality        String       // MUMTAZ, JAYYID_JIDDAN, JAYYID, MAKBUL
+  
+  // সবকি (Sabaqi - রিভিশন ১)
+  sabaqiPages         String?      // যেমন: পৃষ্ঠা ১-১০ বা হাফ পারা
+  sabaqiQuality       String?
+  
+  // আমুখতা / দোর (Amukhta - পেছনের পারা রিভিশন)
+  amukhtaParas        String?      // যেমন: পারা ১ থেকে ৩
+  amukhtaQuality      String?
+  
+  // মোট সম্পন্ন পারা
+  totalParasMemorized Int          @default(0)
+  
+  notes               String?
+  teacherId           String?
+  teacher             User?        @relation(fields: [teacherId], references: [id])
+  createdAt           DateTime     @default(now())
+}
+
+model TajweedRecord {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  studentId     String
+  student       Student      @relation(fields: [studentId], references: [id])
+  date          String       // YYYY-MM-DD
+  makhrajScore  Int          @default(5) // ১-৫ স্কেল
+  sifatScore    Int          @default(5)
+  tartilQuality String       @default("MUMTAZ") // MUMTAZ, JAYYID, MAKBUL
+  surahOrPara   String?
+  notes         String?
+  createdAt     DateTime     @default(now())
+}
+
+model NamazRecord {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  studentId     String
+  student       Student      @relation(fields: [studentId], references: [id])
+  date          String       // YYYY-MM-DD
+  fajr          String       @default("JAMAAT") // JAMAAT, MUNFARID, QAZA, EXCUSED
+  dhuhr         String       @default("JAMAAT")
+  asr           String       @default("JAMAAT")
+  maghrib       String       @default("JAMAAT")
+  isha          String       @default("JAMAAT")
+  tahajjud      Boolean      @default(false)
+  notes         String?
+  createdAt     DateTime     @default(now())
+
+  @@unique([institutionId, studentId, date])
+}
+
+model AmalRecord {
+  id             String       @id @default(uuid())
+  institutionId  String
+  institution    Institution  @relation(fields: [institutionId], references: [id])
+  studentId      String
+  student        Student      @relation(fields: [studentId], references: [id])
+  date           String       // YYYY-MM-DD
+  morningAdhkar  Boolean      @default(true)
+  eveningAdhkar  Boolean      @default(true)
+  tilawatPages   Int          @default(0)
+  akhlaqRating   String       @default("MUMTAZ") // MUMTAZ, JAYYID, NEEDS_IMPROVEMENT
+  remark         String?
+  createdAt      DateTime     @default(now())
+
+  @@unique([institutionId, studentId, date])
+}
+
+// -------------------------------------------------------------
+// ৫. Finance & Payroll Models (ফি, ফান্ড, লেনদেন ও বেতন)
+// -------------------------------------------------------------
+
+model FeeInvoice {
+  id                  String               @id @default(uuid())
+  institutionId       String
+  institution         Institution          @relation(fields: [institutionId], references: [id])
+  invoiceNo           String               @unique // যেমন: INV-2026-0012
+  studentId           String
+  student             Student              @relation(fields: [studentId], references: [id])
+  month               String               // জানুয়ারি, ফেব্রুয়ারি...
+  year                Int                  // 2026
+  
+  tuitionFee          Float                @default(0)
+  boardingFee         Float                @default(0)
+  admissionFee        Float                @default(0)
+  examFee             Float                @default(0)
+  otherFee            Float                @default(0)
+  discount            Float                @default(0)
+  totalAmount         Float
+  paidAmount          Float                @default(0)
+  dueAmount           Float                @default(0)
+  
+  status              String               @default("PAID") // PAID, PARTIAL, UNPAID
+  paymentMethod       String               @default("CASH") // CASH, BKASH, NAGAD, BANK, ONLINE
+  collectedBy         String?
+  receivedDate        String
+  notes               String?
+  
+  paymentTransactions PaymentTransaction[]
+  createdAt           DateTime             @default(now())
+}
+
+model PaymentTransaction {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  invoiceId     String
+  invoice       FeeInvoice   @relation(fields: [invoiceId], references: [id])
+  amount        Float
+  gateway       String       // BKASH, NAGAD
+  transactionId String       @unique
+  status        String       @default("COMPLETED") // PENDING, COMPLETED, FAILED
+  payerPhone    String
+  createdAt     DateTime     @default(now())
+}
+
+model Fund {
+  id             String        @id @default(uuid())
+  institutionId  String
+  institution    Institution   @relation(fields: [institutionId], references: [id])
+  nameBn         String        // সাধারণ তহবিল, লিল্লাহ ও যাকাত ফান্ড, মেহমানদারি তহবিল, মসজিদ ও ওয়াকফ
+  nameEn         String
+  code           String        // GENERAL, LILLAH_ZAKAT, HOSPITALITY, WAQF_BUILDING
+  description    String?
+  currentBalance Float         @default(0)
+  transactions   Transaction[]
+  createdAt      DateTime      @default(now())
+
+  @@unique([institutionId, code])
+}
+
+model Transaction {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  voucherNo     String       @unique // VOUCH-2026-001
+  fundId        String
+  fund          Fund         @relation(fields: [fundId], references: [id])
+  type          String       // INCOME, EXPENSE
+  category      String       // ছাত্র ফি, সাধারণ দান, যাকাত/ফিতরা, শিক্ষক বেতন, খাবার খরচ ইত্যাদি
+  amount        Float
+  description   String
+  donorName     String?
+  donorPhone    String?
+  paymentMethod String       @default("CASH")
+  date          String       // YYYY-MM-DD
+  performedBy   String?
+  createdAt     DateTime     @default(now())
+}
+
+model StaffSalary {
+  id               String       @id @default(uuid())
+  institutionId    String
+  institution      Institution  @relation(fields: [institutionId], references: [id])
+  userId           String
+  user             User         @relation(fields: [userId], references: [id])
+  month            String       // জানুয়ারি, ফেব্রুয়ারি...
+  year             Int          // 2026
+  basicSalary      Float
+  housingAllowance Float        @default(0)
+  foodAllowance    Float        @default(0)
+  bonus            Float        @default(0)
+  deduction        Float        @default(0)
+  totalAmount      Float
+  paymentStatus    String       @default("PAID") // PAID, UNPAID, PARTIAL
+  paymentDate      String?
+  paymentMethod    String       @default("CASH") // CASH, BANK, BKASH
+  notes            String?
+  createdAt        DateTime     @default(now())
+
+  @@unique([institutionId, userId, month, year])
+}
+
+// -------------------------------------------------------------
+// ৬. Hostel & Mess Models (আবাসিক, রুম, বেড ও মিল)
+// -------------------------------------------------------------
+
+model HostelBuilding {
+  id            String         @id @default(uuid())
+  institutionId String
+  institution   Institution    @relation(fields: [institutionId], references: [id])
+  nameBn        String         // উসমান (রা.) ভবন, প্রধান ছাত্রাবাস
+  code          String
+  totalFloors   Int            @default(3)
+  rooms         HostelRoom[]
+  createdAt     DateTime       @default(now())
+
+  @@unique([institutionId, code])
+}
+
+model HostelRoom {
+  id            String         @id @default(uuid())
+  institutionId String
+  institution   Institution    @relation(fields: [institutionId], references: [id])
+  buildingId    String
+  building      HostelBuilding @relation(fields: [buildingId], references: [id])
+  roomNumber    String         // যেমন: ১০১, ২০৩
+  floorNumber   Int            @default(1)
+  capacity      Int            @default(4)
+  beds          HostelBed[]
+  createdAt     DateTime       @default(now())
+
+  @@unique([buildingId, roomNumber])
+}
+
+model HostelBed {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  roomId        String
+  room          HostelRoom   @relation(fields: [roomId], references: [id])
+  bedNumber     String       // যেমন: Bed-A, Bed-B
+  studentId     String?
+  student       Student?     @relation(fields: [studentId], references: [id])
+  isOccupied    Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+
+  @@unique([roomId, bedNumber])
+}
+
+model MealRecord {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  date          String       // YYYY-MM-DD
+  studentId     String?
+  student       Student?     @relation(fields: [studentId], references: [id])
+  breakfast     Boolean      @default(true)
+  lunch         Boolean      @default(true)
+  dinner        Boolean      @default(true)
+  guestMeals    Int          @default(0) // মেহমানদের খানা
+  notes         String?
+  createdAt     DateTime     @default(now())
+}
+
+// -------------------------------------------------------------
+// ৭. Library & Inventory Models (কিতাবখানা ও সম্পদ)
+// -------------------------------------------------------------
+
+model Book {
+  id              String       @id @default(uuid())
+  institutionId   String
+  institution     Institution  @relation(fields: [institutionId], references: [id])
+  titleBn         String       // বুখারী শরীফ ১ম খণ্ড, রিয়াদুস সালিহীন
+  titleEn         String?
+  author          String       // ইমাম বুখারী (রহ.)
+  category        String       // HADITH, FIQH, TAFSEER, ADAB, GENERAL
+  shelfNumber     String?      // যেমন: Shelf-03, Rack-B
+  isbn            String?
+  totalCopies     Int          @default(1)
+  availableCopies Int          @default(1)
+  issues          BookIssue[]
+  createdAt       DateTime     @default(now())
+}
+
+model BookIssue {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  bookId        String
+  book          Book         @relation(fields: [bookId], references: [id])
+  studentId     String?
+  student       Student?     @relation(fields: [studentId], references: [id])
+  issuedToName  String       // ছাত্র বা শিক্ষকের নাম
+  phone         String?
+  issueDate     String       // YYYY-MM-DD
+  dueDate       String       // YYYY-MM-DD
+  returnDate    String?
+  status        String       @default("ISSUED") // ISSUED, RETURNED, OVERDUE
+  fineAmount    Float        @default(0)
+  createdAt     DateTime     @default(now())
+}
+
+model MadrasaAsset {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  name          String       // সিলিং ফ্যান, সাউন্ড সিস্টেম, প্রজেক্টর, কম্পিউটার
+  category      String       // ELECTRICAL, FURNITURE, ELECTRONICS, GENERAL
+  quantity      Int          @default(1)
+  location      String?      // বড় হলরুম, অফিস কক্ষ
+  condition     String       @default("GOOD") // GOOD, DAMAGED, UNDER_REPAIR
+  purchaseDate  String?
+  estimatedCost Float        @default(0)
+  createdAt     DateTime     @default(now())
+}
+
+model InventoryItem {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  name          String       // খাতা, চক, ডাস্টার, হারপিক, স্যাভলন
+  category      String       // STATIONERY, CLEANING, FOOD_SUPPLY
+  unit          String       // পিস, ডজন, কেজি, লিটার
+  currentStock  Float        @default(0)
+  reorderLevel  Float        @default(5)
+  createdAt     DateTime     @default(now())
+}
+
+// -------------------------------------------------------------
+// ৮. Attendance, Communication & Audit Models
+// -------------------------------------------------------------
+
+model Attendance {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  date          String       // YYYY-MM-DD
+  studentId     String
+  student       Student      @relation(fields: [studentId], references: [id])
+  classId       String
+  class         ClassSession @relation(fields: [classId], references: [id])
+  status        String       // PRESENT, ABSENT, LEAVE, LATE
+  remark        String?
+  createdAt     DateTime     @default(now())
+}
+
+model SmsLog {
+  id             String       @id @default(uuid())
+  institutionId  String
+  institution    Institution  @relation(fields: [institutionId], references: [id])
+  recipientPhone String
+  recipientName  String
+  message        String
+  smsType        String       // DUE_ALERT, ATTENDANCE, HIFZ_UPDATE, GENERAL_NOTICE
+  status         String       @default("SIMULATED") // SIMULATED, SENT, FAILED
+  sentAt         DateTime     @default(now())
+}
+
+model Notice {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  title         String
+  content       String
+  category      String       @default("GENERAL") // GENERAL, EXAM, HOLIDAY, URGENT
+  isUrgent      Boolean      @default(false)
+  publishedDate String
+  createdAt     DateTime     @default(now())
+}
+
+model AuditLog {
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id])
+  userId        String?
+  user          User?        @relation(fields: [userId], references: [id])
+  action        String       // CREATE_INVOICE, DELETE_STUDENT, UPDATE_MARKS...
+  details       String
+  ipAddress     String?
+  createdAt     DateTime     @default(now())
+}
