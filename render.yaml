@@ -4,6 +4,7 @@ services:
     runtime: node
     plan: free
     region: singapore
+    autoDeploy: true
     buildCommand: npm install --include=dev && npx prisma generate && npm run build
     startCommand: npx next start -p $PORT
     envVars:
