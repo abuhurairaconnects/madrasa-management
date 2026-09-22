@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { formatTaka, toBengaliNumber } from "@/lib/formatters";
-import { Printer, X } from "lucide-react";
+import { Printer, X, ArrowLeft } from "lucide-react";
 
 interface InvoiceData {
   invoiceNo: string;
@@ -43,31 +43,66 @@ interface PosReceiptProps {
 }
 
 export function PosThermalReceipt({ invoice, institution, onClose }: PosReceiptProps) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
   const handlePrint = () => {
     window.print();
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto print:p-0 print:bg-white print:static">
-      <div className="bg-white text-zinc-900 rounded-2xl shadow-2xl max-w-sm w-full p-6 print:p-0 print:shadow-none print:w-full print:max-w-none">
-        {/* Modal Controls (Hidden in Print) */}
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-200 mb-4 print:hidden">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <h3 className="font-bold text-sm text-zinc-800">৮০ মিমি থার্মাল রসিদ প্রিভিউ</h3>
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-xs p-2 sm:p-4 md:p-6 print:p-0 print:bg-white print:static print:overflow-visible flex justify-center items-start"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onClose) onClose();
+      }}
+    >
+      <div className="relative bg-white text-zinc-900 rounded-2xl shadow-2xl max-w-sm w-full p-4 sm:p-5 my-2 sm:my-4 print:p-0 print:shadow-none print:w-full print:max-w-none print:m-0">
+        {/* Sticky Top Bar Controls */}
+        <div className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-zinc-200 pb-3 pt-1 -mt-1 mb-3 flex items-center justify-between gap-2 shadow-xs print:hidden">
+          <div className="flex items-center gap-1.5">
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-xl text-xs font-bold transition cursor-pointer border border-zinc-300 shadow-xs"
+                title="পূর্বের পেজে ফিরে যান (Esc)"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-zinc-700" />
+                <span>← ফিরে যান</span>
+              </button>
+            )}
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <h3 className="font-bold text-xs text-zinc-800">৮০ মিমি থার্মাল রসিদ</h3>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <button
+              type="button"
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold shadow-sm transition cursor-pointer"
+              className="flex items-center gap-1 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
-              প্রিন্ট করুন
+              <span>প্রিন্ট</span>
             </button>
             {onClose && (
               <button
+                type="button"
                 onClick={onClose}
-                className="p-1.5 text-zinc-400 hover:text-zinc-700 rounded-lg hover:bg-zinc-100 transition cursor-pointer"
+                className="p-1.5 text-zinc-400 hover:text-zinc-700 rounded-xl hover:bg-zinc-100 transition cursor-pointer"
+                title="বন্ধ করুন"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -203,6 +238,28 @@ export function PosThermalReceipt({ invoice, institution, onClose }: PosReceiptP
               {institution?.receiptFooter || "জাযাকুমুল্লাহু খাইরান। আপনার দান ও অর্থ কবুল হোক।"}
             </p>
           </div>
+        </div>
+
+        {/* Bottom Navigation Bar */}
+        <div className="mt-4 pt-3 border-t border-zinc-200 flex items-center justify-between gap-2 print:hidden">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex items-center gap-1.5 px-3 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-xl text-xs font-bold transition cursor-pointer border border-zinc-300 shadow-xs"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-zinc-700" />
+              <span>← ফিরে যান</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer ml-auto"
+          >
+            <Printer className="w-3.5 h-3.5" />
+            <span>প্রিন্ট করুন</span>
+          </button>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { formatTaka, toBengaliNumber } from "@/lib/formatters";
-import { Printer, X } from "lucide-react";
+import { Printer, X, ArrowLeft } from "lucide-react";
 
 interface InvoiceData {
   invoiceNo: string;
@@ -43,6 +43,22 @@ interface A4ReceiptProps {
 }
 
 export function A4OfficialReceipt({ invoice, institution, onClose }: A4ReceiptProps) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
   const handlePrint = () => {
     window.print();
   };
@@ -71,13 +87,13 @@ export function A4OfficialReceipt({ invoice, institution, onClose }: A4ReceiptPr
       <div className="text-center space-y-1 mb-4">
         <p className="text-xs font-arabic text-zinc-700">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
         <h2 className="text-xl font-bold text-emerald-950">
-          {institution?.nameBn || "জামিয়া ইসলামিয়া দারুল উলূম ও হিফজখানা"}
+          {institution?.nameBn || "দারুল উলুম হাফিজিয়া কওমিয়া মাদ্রাসা"}
         </h2>
         {institution?.arabicName && (
           <p className="text-sm font-arabic text-emerald-800">{institution.arabicName}</p>
         )}
         <p className="text-xs text-zinc-600">
-          {institution?.address || "মিরপুর-১, ঢাকা-১২১৬"} | মোবা: {institution?.phone || "০১৭১২-৩৪৫৬৭৮"}
+          {institution?.address || "দীঘি সগুনা , তাড়াশ, সিরাজগঞ্জ"} | মোবা: {institution?.phone || "01869171818"}
         </p>
         <div className="pt-1">
           <span className="inline-block px-4 py-0.5 bg-emerald-900 text-white rounded text-xs font-bold tracking-wider">
@@ -206,28 +222,50 @@ export function A4OfficialReceipt({ invoice, institution, onClose }: A4ReceiptPr
   );
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto print:p-0 print:bg-white print:static">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 print:p-0 print:shadow-none print:max-w-none">
-        {/* Top bar controls */}
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-200 mb-4 print:hidden">
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-xs p-2 sm:p-4 md:p-6 print:p-0 print:bg-white print:static print:overflow-visible flex justify-center items-start"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onClose) onClose();
+      }}
+    >
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 my-2 sm:my-4 print:p-0 print:shadow-none print:max-w-none print:m-0 print:border-none">
+        {/* Sticky Top Bar Controls */}
+        <div className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-zinc-200 pb-3 pt-1 -mt-1 mb-4 flex items-center justify-between gap-2 shadow-xs print:hidden">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-emerald-600" />
-            <h3 className="font-bold text-base text-zinc-800">
-              A4 অফিশিয়াল ২-কপি মানি রিসিট (ছাত্র কপি + অফিস কপি)
-            </h3>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-xl text-xs font-bold transition cursor-pointer border border-zinc-300 shadow-xs"
+                title="পূর্বের পেজে ফিরে যান (Esc)"
+              >
+                <ArrowLeft className="w-4 h-4 text-zinc-700" />
+                <span>← ফিরে যান / বন্ধ করুন</span>
+              </button>
+            )}
+            <div className="hidden sm:flex items-center gap-2 pl-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
+              <h3 className="font-bold text-xs sm:text-sm text-zinc-800">
+                A4 সাইজ ২-কপি মানি রিসিট
+              </h3>
+            </div>
           </div>
+
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-sm transition cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer"
             >
               <Printer className="w-4 h-4" />
-              A4 প্রিন্ট করুন
+              <span>A4 প্রিন্ট করুন</span>
             </button>
             {onClose && (
               <button
+                type="button"
                 onClick={onClose}
                 className="p-2 text-zinc-400 hover:text-zinc-700 rounded-xl hover:bg-zinc-100 transition cursor-pointer"
+                title="বন্ধ করুন"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -236,20 +274,42 @@ export function A4OfficialReceipt({ invoice, institution, onClose }: A4ReceiptPr
         </div>
 
         {/* --- A4 2-Copy Container --- */}
-        <div className="space-y-6 print:space-y-4">
+        <div className="space-y-5 print:space-y-4">
           {/* Copy 1: Student Copy */}
           {renderReceiptCopy("শিক্ষার্থী কপি (Student Copy)")}
 
           {/* Dotted cutting separator */}
-          <div className="relative flex items-center justify-center my-2 print:my-4">
+          <div className="relative flex items-center justify-center my-3 print:my-4">
             <div className="border-t border-dashed border-zinc-400 w-full" />
-            <span className="absolute bg-white px-3 text-[10px] text-zinc-400 font-mono">
+            <span className="absolute bg-white px-3 text-[11px] text-zinc-400 font-mono">
               ✂ এখান থেকে কেটে আলাদা করুন
             </span>
           </div>
 
           {/* Copy 2: Office Copy */}
           {renderReceiptCopy("মাদ্রাসা অফিস কপি (Office Copy)")}
+        </div>
+
+        {/* Bottom Navigation & Print Bar */}
+        <div className="mt-6 pt-4 border-t border-zinc-200 flex items-center justify-between gap-3 print:hidden">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex items-center gap-2 px-4 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-xl text-xs font-bold transition cursor-pointer border border-zinc-300 shadow-xs"
+            >
+              <ArrowLeft className="w-4 h-4 text-zinc-700" />
+              <span>← ফিরে যান / বন্ধ করুন</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm transition cursor-pointer ml-auto"
+          >
+            <Printer className="w-4 h-4" />
+            <span>A4 রসিদ প্রিন্ট করুন</span>
+          </button>
         </div>
       </div>
     </div>

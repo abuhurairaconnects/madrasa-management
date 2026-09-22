@@ -373,8 +373,13 @@ export default function FeesPage() {
 
       {/* Collect Fee Modal */}
       {showCollectModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-zinc-900 rounded-3xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl border border-zinc-200 dark:border-zinc-800 my-auto max-h-[92vh] overflow-y-auto">
+        <div
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex justify-center items-start p-3 sm:p-4 overflow-y-auto"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowCollectModal(false);
+          }}
+        >
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl border border-zinc-200 dark:border-zinc-800 my-4 sm:my-6">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3.5 border-b border-zinc-200 dark:border-zinc-800">
               <div>
