@@ -109,9 +109,10 @@ const BN_WORDS_UNDER_100: string[] = [
   "একানব্বই", "বানব্বই", "তিরানব্বই", "চুরানব্বই", "পঁচানব্বই", "ছিয়ানব্বই", "সাতানব্বই", "আটানব্বই", "নিরানব্বই"
 ];
 
-export function numberToBengaliWords(n: number | null | undefined): string {
-  if (!n || n <= 0) return "শূন্য টাকা মাত্র";
-  let num = Math.floor(n);
+export function numberToBengaliWords(n: number | string | null | undefined): string {
+  const numVal = Number(n);
+  if (isNaN(numVal) || numVal <= 0) return "শূন্য টাকা মাত্র";
+  let num = Math.floor(numVal);
   const parts: string[] = [];
 
   // কোটি (Crore)

@@ -255,6 +255,7 @@ export async function POST(request: NextRequest) {
       const bns = Number(bonus) || 0;
       const ded = Number(deduction) || 0;
       const total = basic + housing + food + bns - ded;
+      const resolvedPaymentDate = paymentStatus === "PAID" ? (paymentDate || new Date().toISOString().split("T")[0]) : null;
 
       const salary = await prisma.staffSalary.upsert({
         where: {
@@ -274,7 +275,7 @@ export async function POST(request: NextRequest) {
           totalAmount: total,
           paymentStatus: paymentStatus || "PAID",
           paymentMethod: paymentMethod || "CASH",
-          paymentDate: paymentDate || (paymentStatus === "PAID" ? new Date().toISOString().split("T")[0] : null),
+          paymentDate: resolvedPaymentDate,
           notes,
         },
         create: {
@@ -290,7 +291,7 @@ export async function POST(request: NextRequest) {
           totalAmount: total,
           paymentStatus: paymentStatus || "PAID",
           paymentMethod: paymentMethod || "CASH",
-          paymentDate: paymentDate || (paymentStatus === "PAID" ? new Date().toISOString().split("T")[0] : null),
+          paymentDate: resolvedPaymentDate,
           notes,
         },
         include: { user: true },
@@ -419,6 +420,20 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json({ success: true, user });
+    }
+
+    // 5. Delete specific salary entry
+    if (action === "DELETE_SALARY") {
+      const { salaryId } = body;
+      if (!salaryId) {
+        return NextResponse.json({ success: false, error: "বেতন আইডি আবশ্যক" }, { status: 400 });
+      }
+
+      await prisma.staffSalary.delete({
+        where: { id: salaryId },
+      });
+
+      return NextResponse.json({ success: true, message: "বেতন রেকর্ড সফলভাবে মুছে ফেলা হয়েছে" });
     }
 
     return NextResponse.json({ success: false, error: "Invalid action" }, { status: 400 });

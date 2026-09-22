@@ -23,6 +23,7 @@ import {
   ChevronRight,
   ShieldCheck,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { toBengaliNumber, formatTaka, numberToBengaliWords } from "@/lib/formatters";
 import { MonthlyPayrollExpenseReport } from "@/components/print/MonthlyPayrollExpenseReport";
@@ -275,6 +276,44 @@ export default function PayrollPage() {
       console.error("Mark paid failed:", err);
     }
   };
+
+  const handleDeleteSalary = async (salaryId: string, staffName: string) => {
+    if (!confirm(`আপনি কি নিশ্চিতভাবে ${staffName}-এর এই মাসের বেতন রেকর্ডটি মুছে ফেলতে চান?`)) {
+      return;
+    }
+    try {
+      const res = await fetch("/api/payroll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "DELETE_SALARY",
+          salaryId,
+        }),
+      });
+      const resJson = await res.json();
+      if (resJson.success) {
+        loadData();
+      } else {
+        alert(resJson.error || "মুছে ফেলা সম্ভব হয়নি");
+      }
+    } catch (err) {
+      console.error("Delete salary failed:", err);
+    }
+  };
+
+  // Close any modal with Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (paySlipData) setPaySlipData(null);
+        if (showCreateModal) setShowCreateModal(false);
+        if (showAddStaffModal) setShowAddStaffModal(false);
+        if (showPdfReport) setShowPdfReport(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [paySlipData, showCreateModal, showAddStaffModal, showPdfReport]);
 
   const handleBulkGenerate = async () => {
     if (!confirm(`${selectedMonth} ${selectedYear} মাসের সকল কর্মকর্তা ও কর্মচারীর বেতন শিট এক ক্লিকে প্রস্তুত করতে চান?`)) {
@@ -696,6 +735,13 @@ export default function PayrollPage() {
                               >
                                 <Printer className="w-3 h-3 text-emerald-600" />
                                 <span>পে-স্লিপ</span>
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSalary(s.id, s.user?.name || "কর্মকর্তা")}
+                                className="p-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition cursor-pointer"
+                                title="বেতন রেকর্ড মুছে ফেলুন"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           </td>

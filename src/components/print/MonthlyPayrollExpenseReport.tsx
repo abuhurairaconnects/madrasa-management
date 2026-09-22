@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { formatTaka, toBengaliNumber, numberToBengaliWords, formatBengaliDate } from "@/lib/formatters";
-import { Printer, X, ArrowLeft, Building2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Printer, X, ArrowLeft } from "lucide-react";
 
 interface StaffSalaryRecord {
   id: string;
