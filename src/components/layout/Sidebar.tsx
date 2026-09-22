@@ -31,11 +31,19 @@ import {
 import { useRole, UserRole, ROLE_ICONS } from "@/context/RoleContext";
 import { useSidebar } from "@/context/SidebarContext";
 
+interface SubNavItem {
+  nameBn: string;
+  href: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  badge?: string;
+}
+
 interface NavItem {
   nameBn: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
+  subItems?: SubNavItem[];
 }
 
 const departmentNavItems: Record<UserRole, NavItem[]> = {
@@ -47,10 +55,24 @@ const departmentNavItems: Record<UserRole, NavItem[]> = {
       badge: "সেন্ট্রাল",
     },
     {
-      nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
-      href: "/payroll",
-      icon: Banknote,
-      badge: "বেতন",
+      nameBn: "হিসাব ও অর্থ বিভাগ",
+      href: "/accounts",
+      icon: Landmark,
+      badge: "হিসাব",
+      subItems: [
+        {
+          nameBn: "শরীয়াহ ফান্ড ও খতিয়ান",
+          href: "/accounts",
+          icon: Landmark,
+          badge: "তহবিল",
+        },
+        {
+          nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
+          href: "/payroll",
+          icon: Banknote,
+          badge: "বেতন",
+        },
+      ],
     },
     {
       nameBn: "মাদ্রাসার প্রোফাইল",
@@ -85,16 +107,24 @@ const departmentNavItems: Record<UserRole, NavItem[]> = {
       badge: "রসিদ",
     },
     {
-      nameBn: "শরীয়াহ ফান্ড ও খতিয়ান",
+      nameBn: "হিসাব ও তহবিল খতিয়ান",
       href: "/accounts",
       icon: Landmark,
-      badge: "তহবিল",
-    },
-    {
-      nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
-      href: "/payroll",
-      icon: Banknote,
-      badge: "বেতন",
+      badge: "হিসাব",
+      subItems: [
+        {
+          nameBn: "শরীয়াহ ফান্ড ও খতিয়ান",
+          href: "/accounts",
+          icon: Landmark,
+          badge: "তহবিল",
+        },
+        {
+          nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
+          href: "/payroll",
+          icon: Banknote,
+          badge: "বেতন",
+        },
+      ],
     },
     {
       nameBn: "সম্পদ ও মালামাল স্টক",
@@ -301,42 +331,93 @@ export function Sidebar() {
 
       {currentNavItems.map((item) => {
         const Icon = item.icon;
-        const isActive = pathname === item.href;
+        const isExactActive = pathname === item.href;
+        const isChildActive = item.subItems?.some((sub) => pathname === sub.href);
+        const isParentHighlighted = isExactActive || isChildActive;
 
         return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => {
-              if (isMobile) {
-                closeMobileMenu();
-              }
-            }}
-            title={isCollapsed && !isMobile ? item.nameBn : undefined}
-            className={`flex items-center ${
-              isCollapsed && !isMobile ? "justify-center px-2" : "justify-between px-3"
-            } py-2.5 rounded-xl font-medium text-xs md:text-sm transition-all duration-150 ${
-              isActive
-                ? "bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-md shadow-emerald-900/50 translate-x-1"
-                : "text-emerald-100/90 hover:bg-emerald-900/70 hover:text-white"
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              <Icon
-                className={`w-4 h-4 shrink-0 ${
-                  isActive ? "text-amber-300" : "text-emerald-400"
-                }`}
-              />
-              {(!isCollapsed || isMobile) && (
-                <span className="truncate">{item.nameBn}</span>
+          <div key={item.href} className="space-y-1">
+            <Link
+              href={item.href}
+              onClick={() => {
+                if (isMobile) {
+                  closeMobileMenu();
+                }
+              }}
+              title={isCollapsed && !isMobile ? item.nameBn : undefined}
+              className={`flex items-center ${
+                isCollapsed && !isMobile ? "justify-center px-2" : "justify-between px-3"
+              } py-2.5 rounded-xl font-medium text-xs md:text-sm transition-all duration-150 ${
+                isExactActive && (!item.subItems || (pathname === item.href && !isChildActive))
+                  ? "bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-md shadow-emerald-900/50 translate-x-1"
+                  : isParentHighlighted
+                  ? "bg-emerald-900/90 text-white border border-emerald-700/60"
+                  : "text-emerald-100/90 hover:bg-emerald-900/70 hover:text-white"
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Icon
+                  className={`w-4 h-4 shrink-0 ${
+                    isExactActive ? "text-amber-300" : isChildActive ? "text-amber-400" : "text-emerald-400"
+                  }`}
+                />
+                {(!isCollapsed || isMobile) && (
+                  <span className="truncate">{item.nameBn}</span>
+                )}
+              </div>
+              {(!isCollapsed || isMobile) && item.badge && (
+                <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.5 rounded font-normal shrink-0">
+                  {item.badge}
+                </span>
               )}
-            </div>
-            {(!isCollapsed || isMobile) && item.badge && (
-              <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.5 rounded font-normal shrink-0">
-                {item.badge}
-              </span>
+            </Link>
+
+            {/* Render Sub-items (e.g. employee salary inside accounts) */}
+            {(!isCollapsed || isMobile) && item.subItems && item.subItems.length > 0 && (
+              <div className="pl-4 pr-1 py-1 space-y-1 border-l-2 border-emerald-700/60 ml-5 my-0.5">
+                {item.subItems.map((sub) => {
+                  const isSubActive = pathname === sub.href;
+                  const SubIcon = sub.icon || Banknote;
+                  return (
+                    <Link
+                      key={sub.nameBn + sub.href}
+                      href={sub.href}
+                      onClick={() => {
+                        if (isMobile) {
+                          closeMobileMenu();
+                        }
+                      }}
+                      className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        isSubActive
+                          ? "bg-amber-400 text-emerald-950 font-black shadow-xs"
+                          : "text-emerald-200/90 hover:text-white hover:bg-emerald-800/60"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <SubIcon
+                          className={`w-3.5 h-3.5 shrink-0 ${
+                            isSubActive ? "text-emerald-950" : "text-amber-300/80"
+                          }`}
+                        />
+                        <span className="truncate">{sub.nameBn}</span>
+                      </div>
+                      {sub.badge && (
+                        <span
+                          className={`text-[9px] px-1.5 py-0.2 rounded font-normal shrink-0 ${
+                            isSubActive
+                              ? "bg-emerald-950 text-amber-300 font-bold"
+                              : "bg-emerald-900/80 text-emerald-300 border border-emerald-700/50"
+                          }`}
+                        >
+                          {sub.badge}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
             )}
-          </Link>
+          </div>
         );
       })}
     </nav>

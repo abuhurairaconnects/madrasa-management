@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   Landmark,
   PlusCircle,
@@ -14,6 +15,9 @@ import {
   Coffee,
   X,
   ShieldAlert,
+  Banknote,
+  ChevronRight,
+  ArrowUpRight,
 } from "lucide-react";
 import {
   toBengaliNumber,
@@ -104,6 +108,28 @@ export default function AccountsPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Top Tab Bar: Accounts (শরীয়াহ তহবিল) vs Payroll (কর্মকর্তা ও কর্মচারী বেতন) */}
+      <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800/80 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-700">
+        <button
+          type="button"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 shadow-sm border border-zinc-200/80 dark:border-zinc-700 cursor-pointer"
+        >
+          <Landmark className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>শরীয়াহ তহবিল ও সাধারণ খতিয়ান</span>
+        </button>
+
+        <Link
+          href="/payroll"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-white/60 dark:hover:bg-zinc-900/60 transition"
+        >
+          <Banknote className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>কর্মকর্তা ও কর্মচারী বেতন</span>
+          <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+            পে-রোল
+          </span>
+        </Link>
+      </div>
+
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
         <div>
@@ -176,6 +202,34 @@ export default function AccountsPage() {
         <span className="text-xs font-medium bg-emerald-800/80 px-3 py-1 rounded-full border border-emerald-500/30">
           শরিয়াহ নিরীক্ষিত হিসাব
         </span>
+      </div>
+
+      {/* Quick Access Card: Employee Salary & Payroll inside Accounts */}
+      <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-emerald-900 text-white rounded-2xl p-5 border border-emerald-800/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-amber-400 text-emerald-950 flex items-center justify-center shrink-0 font-bold shadow-md">
+            <Banknote className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="font-black text-sm sm:text-base text-white flex items-center gap-2">
+              <span>কর্মকর্তা ও কর্মচারী মাসিক বেতন (পে-রোল)</span>
+              <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-full font-bold">
+                হিসাবের অংশ
+              </span>
+            </h3>
+            <p className="text-xs text-emerald-200/80 mt-0.5">
+              মাদ্রাসার সকল শিক্ষক ও কর্মচারীর মাসিক বেতন তৈরি, অগ্রিম/কর্তন সমন্বয়, পে-স্লিপ ও পূর্ণাঙ্গ খরচের এ-ফোর (A4) রিপোর্ট
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href="/payroll"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-emerald-950 font-black rounded-xl text-xs shadow-md transition shrink-0"
+        >
+          <Banknote className="w-4 h-4" />
+          <span>বেতন ও পে-রোল পরিচালনা করুন →</span>
+        </Link>
       </div>
 
       {/* Filter and Transaction Ledger Table */}

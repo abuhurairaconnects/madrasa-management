@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   Banknote,
   PlusCircle,
@@ -24,6 +25,7 @@ import {
   ShieldCheck,
   Pencil,
   Trash2,
+  Landmark,
 } from "lucide-react";
 import { toBengaliNumber, formatTaka, numberToBengaliWords } from "@/lib/formatters";
 import { MonthlyPayrollExpenseReport } from "@/components/print/MonthlyPayrollExpenseReport";
@@ -398,6 +400,28 @@ export default function PayrollPage() {
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
+      {/* Top Tab Bar: Accounts (শরীয়াহ তহবিল) vs Payroll (কর্মকর্তা ও কর্মচারী বেতন) */}
+      <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800/80 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-700 print:hidden">
+        <Link
+          href="/accounts"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-white/60 dark:hover:bg-zinc-900/60 transition"
+        >
+          <Landmark className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>শরীয়াহ তহবিল ও সাধারণ খতিয়ান</span>
+        </Link>
+
+        <button
+          type="button"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 shadow-sm border border-zinc-200/80 dark:border-zinc-700 cursor-pointer"
+        >
+          <Banknote className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>কর্মকর্তা ও কর্মচারী বেতন</span>
+          <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+            পে-রোল
+          </span>
+        </button>
+      </div>
+
       {/* Header Banner */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 p-6 rounded-3xl text-white shadow-xl border border-emerald-800/60 relative overflow-hidden">
         <div className="absolute right-0 top-0 bottom-0 w-80 opacity-5 pointer-events-none select-none flex items-center justify-center font-arabic text-8xl">

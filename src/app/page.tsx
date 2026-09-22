@@ -155,11 +155,11 @@ export default function DashboardPage() {
               <span>ফি আদায়</span>
             </Link>
             <Link
-              href="/payroll"
+              href="/accounts"
               className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-amber-300 rounded-xl text-xs font-black shadow-md shadow-emerald-950/40 border border-emerald-500/40 transition text-center"
             >
-              <Banknote className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>কর্মচারী বেতন</span>
+              <Landmark className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>হিসাব ও তহবিল</span>
             </Link>
             <Link
               href="/hifz"
@@ -451,13 +451,22 @@ export default function DashboardPage() {
               শরিয়াহ অনুযায়ী সাধারণ, লিল্লাহ/যাকাত, মেহমানদারি ও ওয়াকফ তহবিলের পৃথক খতিয়ান হিসাব
             </p>
           </div>
-          <Link
-            href="/accounts"
-            className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1"
-          >
-            <span>পূর্ণাঙ্গ খতিয়ান</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/payroll"
+              className="text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-300/80 dark:border-emerald-800 flex items-center gap-1.5 transition shadow-xs"
+            >
+              <Banknote className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
+              <span>কর্মচারী বেতন</span>
+            </Link>
+            <Link
+              href="/accounts"
+              className="text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 flex items-center gap-1 transition"
+            >
+              <span>পূর্ণাঙ্গ খতিয়ান</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
