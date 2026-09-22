@@ -11,7 +11,6 @@ import {
   ShieldCheck,
   UserCheck,
   ArrowLeft,
-  Sparkles,
   Building,
 } from "lucide-react";
 
@@ -19,7 +18,7 @@ export default function GuardianLoginPage() {
   const router = useRouter();
   const [loginMethod, setLoginMethod] = useState<"PHONE" | "STUDENT_ID">("PHONE");
   const [identifier, setIdentifier] = useState("");
-  const [pin, setPin] = useState("1234");
+  const [pin, setPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -57,13 +56,6 @@ export default function GuardianLoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     executeLogin(identifier, pin, loginMethod === "PHONE");
-  };
-
-  const handleQuickDemoLogin = (demoIdentifier: string, isPhone: boolean = true) => {
-    setLoginMethod(isPhone ? "PHONE" : "STUDENT_ID");
-    setIdentifier(demoIdentifier);
-    setPin("1234");
-    executeLogin(demoIdentifier, "1234", isPhone);
   };
 
   return (
@@ -192,51 +184,6 @@ export default function GuardianLoginPage() {
               )}
             </button>
           </form>
-
-          {/* 1-Click Instant Demo Login Option */}
-          <div className="mt-6 pt-5 border-t border-slate-800">
-            <p className="text-xs text-slate-300 font-semibold mb-2.5 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              টেস্টিং / ডেমো অভিভাবক অ্যাকাউন্টে ১-ক্লিক লগইন:
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button
-                type="button"
-                disabled={loading}
-                onClick={() => handleQuickDemoLogin("01711223344", true)}
-                className="w-full p-2.5 bg-slate-950 hover:bg-emerald-950/40 border border-slate-700 hover:border-emerald-500/50 rounded-xl text-left transition group cursor-pointer"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white group-hover:text-emerald-300">
-                    মোঃ রফিকুল ইসলাম
-                  </span>
-                  <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">
-                    মোবাইল
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400 mt-0.5 font-mono">01711223344</p>
-                <p className="text-[10px] text-emerald-400/90 mt-0.5">ছাত্র: মোঃ আব্দুল্লাহ</p>
-              </button>
-
-              <button
-                type="button"
-                disabled={loading}
-                onClick={() => handleQuickDemoLogin("JAMIA-01-S001", false)}
-                className="w-full p-2.5 bg-slate-950 hover:bg-emerald-950/40 border border-slate-700 hover:border-emerald-500/50 rounded-xl text-left transition group cursor-pointer"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white group-hover:text-emerald-300">
-                    মোহাম্মদ আব্দুল্লাহ
-                  </span>
-                  <span className="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded">
-                    আইডি
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400 mt-0.5 font-mono">JAMIA-01-S001</p>
-                <p className="text-[10px] text-blue-400/90 mt-0.5">হিফজুল কুরআন বিভাগ</p>
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Help Information */}
