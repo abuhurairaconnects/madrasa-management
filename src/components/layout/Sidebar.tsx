@@ -47,6 +47,12 @@ const departmentNavItems: Record<UserRole, NavItem[]> = {
       badge: "সেন্ট্রাল",
     },
     {
+      nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
+      href: "/payroll",
+      icon: Banknote,
+      badge: "বেতন",
+    },
+    {
       nameBn: "মাদ্রাসার প্রোফাইল",
       href: "/profile",
       icon: Building,
@@ -85,10 +91,10 @@ const departmentNavItems: Record<UserRole, NavItem[]> = {
       badge: "তহবিল",
     },
     {
-      nameBn: "উস্তাদ বেতন ও পে-রোল",
+      nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
       href: "/payroll",
       icon: Banknote,
-      badge: "স্যালারি",
+      badge: "বেতন",
     },
     {
       nameBn: "সম্পদ ও মালামাল স্টক",
