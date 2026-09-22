@@ -18,6 +18,7 @@ import {
   HeartHandshake,
   ShieldCheck,
   Landmark,
+  Banknote,
 } from "lucide-react";
 import {
   toBengaliNumber,
@@ -137,7 +138,7 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* 4 Primary Quick Action Buttons */}
+          {/* 5 Primary Quick Action Buttons */}
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-2.5">
             <Link
               href="/students"
@@ -152,6 +153,13 @@ export default function DashboardPage() {
             >
               <Receipt className="w-4 h-4 shrink-0" />
               <span>ফি আদায়</span>
+            </Link>
+            <Link
+              href="/payroll"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-amber-300 rounded-xl text-xs font-black shadow-md shadow-emerald-950/40 border border-emerald-500/40 transition text-center"
+            >
+              <Banknote className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>কর্মচারী বেতন</span>
             </Link>
             <Link
               href="/hifz"
