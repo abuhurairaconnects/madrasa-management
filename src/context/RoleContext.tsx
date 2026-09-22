@@ -111,13 +111,13 @@ export interface UserProfile {
 export const DEMO_PROFILES: Record<UserRole, UserProfile> = {
   MUHTAMIM: {
     id: "user-muhtamim-01",
-    name: "মাওলানা মুহাম্মদ আব্দুল্লাহ",
-    username: "admin_jamia",
+    name: "মাওলানা মোহাম্মদ আবু হুরায়রা",
+    username: "abuhuraira",
     role: "MUHTAMIM",
     phone: "০১৭১১-২২৩৩৪৪",
     designation: "মুহতামিম ও প্রধান পরিচালক",
     assignedDept: "সার্বিক প্রশাসন ও কেন্দ্রীয় সিদ্ধান্ত",
-    email: "muhtamim@madrasa.edu.bd",
+    email: "abuhuraira@madrasa.edu.bd",
     joinedDate: "০১ জানুয়ারি ২০২০",
   },
   ACCOUNTANT: {
@@ -213,13 +213,22 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
       const savedUserStr = localStorage.getItem("madrasa_active_user");
       if (savedUserStr) {
         try {
-          setCurrentUser(JSON.parse(savedUserStr));
+          const parsed = JSON.parse(savedUserStr);
+          if (parsed.role === "MUHTAMIM" || savedRole === "MUHTAMIM") {
+            parsed.name = "মাওলানা মোহাম্মদ আবু হুরায়রা";
+            parsed.designation = "মুহতামিম ও প্রধান পরিচালক";
+            localStorage.setItem("madrasa_active_user", JSON.stringify(parsed));
+          }
+          setCurrentUser(parsed);
         } catch {
           setCurrentUser(DEMO_PROFILES[savedRole]);
         }
       } else {
         setCurrentUser(DEMO_PROFILES[savedRole]);
       }
+    } else {
+      setCurrentUser(DEMO_PROFILES.MUHTAMIM);
+      localStorage.setItem("madrasa_active_user", JSON.stringify(DEMO_PROFILES.MUHTAMIM));
     }
   }, []);
 

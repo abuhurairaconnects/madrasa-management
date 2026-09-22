@@ -320,11 +320,11 @@ const htmlContent = `<!DOCTYPE html>
       <div class="cover-footer-box">
         <table style="width: 100%; font-size: 11.5px; color: #e2e8f0;">
           <tr>
-            <td style="width: 50%;">
-              <strong style="color: #fbbf24;">উপস্থাপনায়:</strong> মাদ্রাসা টেকনোলজি টিম<br>
-              <strong style="color: #fbbf24;">উদ্দেশ্য:</strong> পরিচালনা কমিটি, মুহতামিম ও শিক্ষকবৃন্দের পর্যালোচনা
+            <td style="width: 55%;">
+              <strong style="color: #fbbf24;">মুহতামিম ও পরিচালক:</strong> মাওলানা মোহাম্মদ আবু হুরায়রা<br>
+              <strong style="color: #fbbf24;">লক্ষ্য ও উদ্দেশ্য:</strong> পরিচালনা কমিটি ও শিক্ষকবৃন্দের সার্বিক অটোমেশন
             </td>
-            <td style="width: 50%; text-align: right;">
+            <td style="width: 45%; text-align: right;">
               <strong style="color: #fbbf24;">লাইভ অ্যাপ লিঙ্ক:</strong> madrasa-management-mlo9.onrender.com<br>
               <strong style="color: #fbbf24;">সংস্করণ:</strong> ২০২৬ প্রোডাকশন এডিশন (PWA/APK)
             </td>
