@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -24,7 +24,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
   LogOut,
   Building,
   Layers,
@@ -39,129 +38,143 @@ interface NavItem {
   badge?: string;
 }
 
-interface NavGroup {
-  groupName: string;
-  items: NavItem[];
-}
-
-const muhtamimNavGroups: NavGroup[] = [
-  {
-    groupName: "মূল ড্যাশবোর্ড",
-    items: [
-      { nameBn: "মূল ড্যাশবোর্ড", href: "/", icon: LayoutDashboard, badge: "সেন্ট্রাল" },
-      { nameBn: "এস.এম.এস ও নোটিশ", href: "/sms", icon: MessageSquare, badge: "বার্তা" },
-    ],
-  },
-  {
-    groupName: "তালিমাত ও শিক্ষা",
-    items: [
-      { nameBn: "শিক্ষার্থী ও ভর্তি", href: "/students", icon: Users, badge: "ভর্তি" },
-      { nameBn: "দৈনিক হাজিরা", href: "/attendance", icon: CalendarCheck, badge: "উপস্থিতি" },
-      { nameBn: "হিফজ ট্র্যাকার", href: "/hifz", icon: BookOpen, badge: "ছবক" },
-      { nameBn: "একাডেমিক ও রুটিন", href: "/academic", icon: GraduationCap, badge: "সিলেবাস" },
-      { nameBn: "পরীক্ষা ও ফলাফল", href: "/exams", icon: FileSpreadsheet, badge: "মার্কশিট" },
-      { nameBn: "আমল ও তাজবীদ", href: "/islamic-studies", icon: Sparkles, badge: "আমল" },
-      { nameBn: "কিতাবখানা ও লাইব্রেরি", href: "/library", icon: Library, badge: "বই" },
-    ],
-  },
-  {
-    groupName: "হিসাব ও অর্থ",
-    items: [
-      { nameBn: "ফি আদায় ও রসিদ", href: "/fees", icon: Receipt, badge: "রসিদ" },
-      { nameBn: "শরীয়াহ ফান্ড ও খতিয়ান", href: "/accounts", icon: Landmark, badge: "তহবিল" },
-      { nameBn: "উস্তাদদের বেতন", href: "/payroll", icon: Banknote, badge: "স্যালারি" },
-      { nameBn: "সম্পদ ও মালামাল স্টক", href: "/inventory", icon: Boxes, badge: "স্টক" },
-    ],
-  },
-  {
-    groupName: "হোস্টেল ও অভিভাবক",
-    items: [
-      { nameBn: "হোস্টেল ও মেস", href: "/hostel", icon: BedDouble, badge: "মেস" },
-      { nameBn: "অভিভাবক পোর্টাল", href: "/guardian", icon: Smartphone, badge: "মোবাইল" },
-    ],
-  },
-  {
-    groupName: "প্রশাসন ও সেটিংস",
-    items: [
-      { nameBn: "মাদ্রাসার প্রোফাইল", href: "/profile", icon: Building, badge: "তথ্য" },
-      { nameBn: "মাদ্রাসা সেটিংস", href: "/settings", icon: Settings, badge: "কনফিগ" },
-      { nameBn: "সুপার এডমিন (SaaS)", href: "/super-admin", icon: ShieldCheck, badge: "মাস্টার" },
-    ],
-  },
-];
-
-const roleSpecificNavGroups: Record<Exclude<UserRole, "MUHTAMIM">, NavGroup[]> = {
-  ACCOUNTANT: [
+const departmentNavItems: Record<UserRole, NavItem[]> = {
+  MUHTAMIM: [
     {
-      groupName: "হিসাব ও অর্থ বিভাগ",
-      items: [
-        { nameBn: "ফি আদায় ও রসিদ", href: "/fees", icon: Receipt, badge: "রসিদ" },
-        { nameBn: "শরীয়াহ ফান্ড ও খতিয়ান", href: "/accounts", icon: Landmark, badge: "তহবিল" },
-        { nameBn: "উস্তাদ বেতন ও পে-রোল", href: "/payroll", icon: Banknote, badge: "স্যালারি" },
-        { nameBn: "সম্পদ ও মালামাল স্টক", href: "/inventory", icon: Boxes, badge: "ইনভেন্টরি" },
-      ],
+      nameBn: "মূল ড্যাশবোর্ড",
+      href: "/",
+      icon: LayoutDashboard,
+      badge: "সেন্ট্রাল",
     },
     {
-      groupName: "সাধারণ",
-      items: [
-        { nameBn: "মূল ড্যাশবোর্ড", href: "/", icon: LayoutDashboard },
-        { nameBn: "এস.এম.এস সেন্টার", href: "/sms", icon: MessageSquare },
-      ],
+      nameBn: "মাদ্রাসার প্রোফাইল",
+      href: "/profile",
+      icon: Building,
+      badge: "তথ্য",
+    },
+    {
+      nameBn: "এস.এম.এস সেন্টার",
+      href: "/sms",
+      icon: MessageSquare,
+      badge: "বার্তা",
+    },
+    {
+      nameBn: "মাদ্রাসা সেটিংস",
+      href: "/settings",
+      icon: Settings,
+      badge: "কনফিগ",
+    },
+    {
+      nameBn: "সুপার এডমিন (SaaS)",
+      href: "/super-admin",
+      icon: ShieldCheck,
+      badge: "মাস্টার",
+    },
+  ],
+  ACCOUNTANT: [
+    {
+      nameBn: "ফি আদায় ও রসিদ",
+      href: "/fees",
+      icon: Receipt,
+      badge: "রসিদ",
+    },
+    {
+      nameBn: "শরীয়াহ ফান্ড ও খতিয়ান",
+      href: "/accounts",
+      icon: Landmark,
+      badge: "তহবিল",
+    },
+    {
+      nameBn: "উস্তাদ বেতন ও পে-রোল",
+      href: "/payroll",
+      icon: Banknote,
+      badge: "স্যালারি",
+    },
+    {
+      nameBn: "সম্পদ ও মালামাল স্টক",
+      href: "/inventory",
+      icon: Boxes,
+      badge: "ইনভেন্টরি",
     },
   ],
   NAZIM_E_TALIMAT: [
     {
-      groupName: "শিক্ষা ও তালিমাত বিভাগ",
-      items: [
-        { nameBn: "শিক্ষার্থী ও ভর্তি", href: "/students", icon: Users, badge: "ভর্তি" },
-        { nameBn: "একাডেমিক ও রুটিন", href: "/academic", icon: GraduationCap, badge: "সিলেবাস" },
-        { nameBn: "পরীক্ষা ও ফলাফল", href: "/exams", icon: FileSpreadsheet, badge: "মার্কশিট" },
-        { nameBn: "দৈনিক হাজিরা খাতা", href: "/attendance", icon: CalendarCheck, badge: "উপস্থিতি" },
-      ],
+      nameBn: "শিক্ষার্থী ও ভর্তি",
+      href: "/students",
+      icon: Users,
+      badge: "ভর্তি",
     },
     {
-      groupName: "সাধারণ",
-      items: [
-        { nameBn: "মূল ড্যাশবোর্ড", href: "/", icon: LayoutDashboard },
-        { nameBn: "এস.এম.এস সেন্টার", href: "/sms", icon: MessageSquare },
-      ],
+      nameBn: "একাডেমিক ও রুটিন",
+      href: "/academic",
+      icon: GraduationCap,
+      badge: "সিলেবাস",
+    },
+    {
+      nameBn: "পরীক্ষা ও ফলাফল",
+      href: "/exams",
+      icon: FileSpreadsheet,
+      badge: "মার্কশিট",
+    },
+    {
+      nameBn: "দৈনিক হাজিরা খাতা",
+      href: "/attendance",
+      icon: CalendarCheck,
+      badge: "উপস্থিতি",
     },
   ],
   TEACHER: [
     {
-      groupName: "হিফজ ও শিক্ষক ডেস্ক",
-      items: [
-        { nameBn: "হিফজ ট্র্যাকার", href: "/hifz", icon: BookOpen, badge: "ছবক" },
-        { nameBn: "তাজবীদ ও আমল", href: "/islamic-studies", icon: Sparkles, badge: "নামাজ" },
-        { nameBn: "কিতাবখানা ও লাইব্রেরি", href: "/library", icon: Library, badge: "বই" },
-        { nameBn: "ক্লাসের হাজিরা", href: "/attendance", icon: CalendarCheck, badge: "হাজিরা" },
-      ],
+      nameBn: "হিফজ ট্র্যাকার",
+      href: "/hifz",
+      icon: BookOpen,
+      badge: "ছবক",
     },
     {
-      groupName: "সাধারণ",
-      items: [{ nameBn: "মূল ড্যাশবোর্ড", href: "/", icon: LayoutDashboard }],
+      nameBn: "তাজবীদ ও আমল",
+      href: "/islamic-studies",
+      icon: Sparkles,
+      badge: "নামাজ",
+    },
+    {
+      nameBn: "কিতাবখানা ও লাইব্রেরি",
+      href: "/library",
+      icon: Library,
+      badge: "বই",
+    },
+    {
+      nameBn: "ক্লাসের হাজিরা",
+      href: "/attendance",
+      icon: CalendarCheck,
+      badge: "হাজিরা",
     },
   ],
   HOSTEL_SUPER: [
     {
-      groupName: "হোস্টেল ও মেস ডেস্ক",
-      items: [
-        { nameBn: "হোস্টেল ও ডাইনিং", href: "/hostel", icon: BedDouble, badge: "রুম/মিল" },
-        { nameBn: "হোস্টেল মালামাল স্টক", href: "/inventory", icon: Boxes, badge: "মালামাল" },
-      ],
+      nameBn: "হোস্টেল ও ডাইনিং",
+      href: "/hostel",
+      icon: BedDouble,
+      badge: "রুম/মিল",
     },
     {
-      groupName: "সাধারণ",
-      items: [{ nameBn: "মূল ড্যাশবোর্ড", href: "/", icon: LayoutDashboard }],
+      nameBn: "হোস্টেল মালামাল স্টক",
+      href: "/inventory",
+      icon: Boxes,
+      badge: "মালামাল",
     },
   ],
   PARENT: [
     {
-      groupName: "অভিভাবক পোর্টাল",
-      items: [
-        { nameBn: "অভিভাবক পোর্টাল", href: "/guardian", icon: Smartphone, badge: "মোবাইল" },
-        { nameBn: "মাদ্রাসার তথ্য ও প্রোফাইল", href: "/profile", icon: Building, badge: "তথ্য" },
-      ],
+      nameBn: "অভিভাবক পোর্টাল",
+      href: "/guardian",
+      icon: Smartphone,
+      badge: "মোবাইল",
+    },
+    {
+      nameBn: "মাদ্রাসার তথ্য ও প্রোফাইল",
+      href: "/profile",
+      icon: Building,
+      badge: "তথ্য",
     },
   ],
 };
@@ -171,13 +184,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const { role, setRole, activeDepartment, departments, currentUser } = useRole();
   const { isMobileOpen, closeMobileMenu, isCollapsed, toggleCollapse } = useSidebar();
-  const [isDeptDropdownOpen, setIsDeptDropdownOpen] = useState(false);
 
-  const navGroups =
-    role === "MUHTAMIM"
-      ? muhtamimNavGroups
-      : roleSpecificNavGroups[role as Exclude<UserRole, "MUHTAMIM">] || muhtamimNavGroups;
-
+  const currentNavItems = departmentNavItems[role] || departmentNavItems.MUHTAMIM;
   const CurrentUserIcon = ROLE_ICONS[currentUser?.role || role] || Users;
 
   const handleLogout = async () => {
@@ -203,8 +211,8 @@ export function Sidebar() {
     router.push(defaultPath);
   };
 
-  // Sleek, compact department selector
-  const renderDepartmentSelector = (isMobile: boolean = false) => {
+  // Render Department Switcher Grid (6 quick buttons)
+  const renderDepartmentSwitcher = (isMobile: boolean = false) => {
     const ActiveDeptIcon = ROLE_ICONS[activeDepartment.role] || Layers;
 
     if (isCollapsed && !isMobile) {
@@ -213,7 +221,7 @@ export function Sidebar() {
           <button
             onClick={() => setRole(role === "MUHTAMIM" ? "ACCOUNTANT" : "MUHTAMIM")}
             className="w-10 h-10 rounded-xl bg-amber-400 text-emerald-950 flex items-center justify-center font-bold text-base shadow-sm hover:bg-amber-300 transition"
-            title={`${activeDepartment.fullTitle} (ডেস্ক পরিবর্তন)`}
+            title={`${activeDepartment.fullTitle} (ক্লিক করে পরিবর্তন করুন)`}
           >
             <ActiveDeptIcon className="w-5 h-5 text-emerald-950" />
           </button>
@@ -222,135 +230,109 @@ export function Sidebar() {
     }
 
     return (
-      <div className="relative p-2.5 border-b border-emerald-900/80 bg-emerald-900/30">
-        <button
-          type="button"
-          onClick={() => setIsDeptDropdownOpen(!isDeptDropdownOpen)}
-          className="w-full flex items-center justify-between p-2 rounded-xl bg-emerald-900/70 hover:bg-emerald-800/90 border border-emerald-800/80 transition text-left group"
-        >
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-amber-400 text-emerald-950 flex items-center justify-center shrink-0 shadow-xs">
-              <ActiveDeptIcon className="w-4 h-4" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-xs text-white truncate">
-                  {activeDepartment.shortTitle} ডেস্ক
-                </span>
-                <span className="text-[9px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.2 rounded font-normal">
-                  {activeDepartment.badge}
-                </span>
-              </div>
-              <p className="text-[10px] text-emerald-300/80 truncate">
-                ডেস্ক পরিবর্তন করতে ক্লিক করুন
-              </p>
-            </div>
-          </div>
-          <ChevronDown
-            className={`w-4 h-4 text-emerald-300 transition-transform duration-200 shrink-0 ${
-              isDeptDropdownOpen ? "rotate-180" : ""
-            }`}
-          />
-        </button>
+      <div className="p-3 border-b border-emerald-900/80 bg-emerald-900/30 space-y-2">
+        <div className="flex items-center justify-between text-[11px] text-emerald-300 font-bold px-0.5">
+          <span className="flex items-center gap-1.5">
+            <Layers className="w-3.5 h-3.5 text-amber-400" />
+            বিভাগ বা ডেস্ক নির্বাচন:
+          </span>
+          <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.2 rounded font-normal">
+            {activeDepartment.badge}
+          </span>
+        </div>
 
-        {/* Dropdown Popover */}
-        {isDeptDropdownOpen && (
-          <div className="absolute top-full left-2 right-2 mt-1.5 z-50 bg-emerald-950 border border-emerald-700/80 rounded-2xl shadow-2xl p-1.5 space-y-1 backdrop-blur-md">
-            <div className="px-2 py-1 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-              ডেস্ক বা বিভাগ নির্বাচন:
-            </div>
-            {departments.map((dept) => {
-              const isSelected = role === dept.role;
-              const DeptIcon = ROLE_ICONS[dept.role] || Layers;
-              return (
-                <button
-                  key={dept.role}
-                  type="button"
-                  onClick={() => {
-                    switchDepartment(dept.role, dept.defaultPath);
-                    setIsDeptDropdownOpen(false);
-                    if (isMobile) closeMobileMenu();
-                  }}
-                  className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition ${
-                    isSelected
-                      ? "bg-amber-400 text-emerald-950 font-bold shadow-xs"
-                      : "text-emerald-100 hover:bg-emerald-900/80"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <DeptIcon
-                      className={`w-3.5 h-3.5 ${
-                        isSelected ? "text-emerald-950" : "text-amber-300"
-                      }`}
-                    />
-                    <span>{dept.fullTitle}</span>
-                  </div>
-                  {isSelected && (
-                    <span className="text-[9px] bg-emerald-950 text-amber-300 px-1.5 py-0.2 rounded font-bold">
-                      সক্রিয়
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+        {/* 6 Quick Modular Department Buttons (2 columns for clear full text) */}
+        <div className="grid grid-cols-2 gap-1.5">
+          {departments.map((dept) => {
+            const isSelected = role === dept.role;
+            const DeptIcon = ROLE_ICONS[dept.role] || Layers;
+            return (
+              <button
+                key={dept.role}
+                onClick={() => {
+                  switchDepartment(dept.role, dept.defaultPath);
+                  if (isMobile) {
+                    closeMobileMenu();
+                  }
+                }}
+                className={`flex items-center justify-start gap-1.5 py-1.5 px-2 rounded-xl text-xs font-bold transition ${
+                  isSelected
+                    ? "bg-amber-400 text-emerald-950 shadow-md ring-1 ring-amber-300 scale-[1.01]"
+                    : "bg-emerald-900/70 hover:bg-emerald-800/90 text-emerald-100 border border-emerald-800/80"
+                }`}
+                title={`${dept.fullTitle} — ${dept.description}`}
+              >
+                <DeptIcon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? "text-emerald-950" : "text-amber-300"}`} />
+                <span className="truncate">{dept.shortTitle}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Current Active Desk Badge */}
+        <div className="p-2 rounded-xl bg-emerald-950/60 border border-emerald-800/80 flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-emerald-800/80 flex items-center justify-center shrink-0">
+            <ActiveDeptIcon className="w-4 h-4 text-amber-300" />
           </div>
-        )}
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-xs text-white truncate">
+              {activeDepartment.fullTitle}
+            </p>
+            <p className="text-[10px] text-emerald-300/80 truncate">
+              {activeDepartment.description}
+            </p>
+          </div>
+        </div>
       </div>
     );
   };
 
   const renderNavLinks = (isMobile: boolean = false) => (
-    <nav className="flex-1 p-2 space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-800">
-      {navGroups.map((group, idx) => (
-        <div key={idx} className="space-y-1">
-          {(!isCollapsed || isMobile) && group.groupName && (
-            <div className="px-2.5 pt-1 text-[10px] font-bold text-emerald-400/80 uppercase tracking-wider">
-              {group.groupName}
-            </div>
-          )}
+    <nav className="flex-1 p-2.5 space-y-1.5 overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-800">
+      <div className="px-2 py-1 text-[11px] font-bold text-emerald-400/80 uppercase tracking-wider">
+        {activeDepartment.shortTitle} ডেস্কের মেনু:
+      </div>
 
-          {group.items.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
+      {currentNavItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = pathname === item.href;
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => {
-                  if (isMobile) {
-                    closeMobileMenu();
-                  }
-                }}
-                title={isCollapsed && !isMobile ? item.nameBn : undefined}
-                className={`flex items-center ${
-                  isCollapsed && !isMobile ? "justify-center px-2" : "justify-between px-3"
-                } py-2 rounded-xl font-medium text-xs md:text-sm transition-all duration-150 ${
-                  isActive
-                    ? "bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-md shadow-emerald-900/50 translate-x-0.5"
-                    : "text-emerald-100/90 hover:bg-emerald-900/70 hover:text-white"
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={() => {
+              if (isMobile) {
+                closeMobileMenu();
+              }
+            }}
+            title={isCollapsed && !isMobile ? item.nameBn : undefined}
+            className={`flex items-center ${
+              isCollapsed && !isMobile ? "justify-center px-2" : "justify-between px-3"
+            } py-2.5 rounded-xl font-medium text-xs md:text-sm transition-all duration-150 ${
+              isActive
+                ? "bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-md shadow-emerald-900/50 translate-x-1"
+                : "text-emerald-100/90 hover:bg-emerald-900/70 hover:text-white"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Icon
+                className={`w-4 h-4 shrink-0 ${
+                  isActive ? "text-amber-300" : "text-emerald-400"
                 }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <Icon
-                    className={`w-4 h-4 shrink-0 ${
-                      isActive ? "text-amber-300" : "text-emerald-400"
-                    }`}
-                  />
-                  {(!isCollapsed || isMobile) && (
-                    <span className="truncate">{item.nameBn}</span>
-                  )}
-                </div>
-                {(!isCollapsed || isMobile) && item.badge && (
-                  <span className="text-[9px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.2 rounded font-normal shrink-0">
-                    {item.badge}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      ))}
+              />
+              {(!isCollapsed || isMobile) && (
+                <span className="truncate">{item.nameBn}</span>
+              )}
+            </div>
+            {(!isCollapsed || isMobile) && item.badge && (
+              <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.5 rounded font-normal shrink-0">
+                {item.badge}
+              </span>
+            )}
+          </Link>
+        );
+      })}
     </nav>
   );
 
@@ -359,6 +341,7 @@ export function Sidebar() {
       {/* =========================================
           1. MOBILE DRAWER OVERLAY & SLIDE-OUT
           ========================================= */}
+      {/* Dark backdrop blur */}
       <div
         onClick={closeMobileMenu}
         className={`md:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 transition-opacity duration-300 ${
@@ -367,11 +350,13 @@ export function Sidebar() {
         aria-hidden="true"
       />
 
+      {/* Slide-out mobile drawer */}
       <aside
         className={`md:hidden fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-emerald-950 text-emerald-50 flex flex-col shadow-2xl transition-transform duration-300 ease-in-out ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
         }`}
       >
+        {/* Mobile Header with Brand & Close Button */}
         <div className="p-4 border-b border-emerald-900/80 bg-emerald-900/40 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <img
@@ -397,14 +382,20 @@ export function Sidebar() {
           </button>
         </div>
 
-        {renderDepartmentSelector(true)}
+        {/* Mobile Department Switcher Grid */}
+        {renderDepartmentSwitcher(true)}
+
+        {/* Filtered Navigation Links for Mobile */}
         {renderNavLinks(true)}
 
+        {/* Mobile Status Footer */}
         <div className="p-3 border-t border-emerald-900/80 bg-emerald-900/30 text-xs text-emerald-300/70 space-y-2">
+          {/* Active User Mini Profile Link */}
           <Link
             href="/profile"
             onClick={closeMobileMenu}
             className="flex items-center gap-2 p-2 rounded-xl bg-emerald-900/70 hover:bg-emerald-800/90 border border-emerald-800/80 transition text-left"
+            title="আমার প্রোফাইল দেখুন ও এডিট করুন"
           >
             <div className="w-7 h-7 rounded-lg bg-emerald-800 flex items-center justify-center shrink-0">
               <CurrentUserIcon className="w-4 h-4 text-amber-300" />
@@ -413,9 +404,7 @@ export function Sidebar() {
               <p className="text-xs font-bold text-white truncate">{currentUser?.name}</p>
               <p className="text-[10px] text-amber-300 truncate">{currentUser?.designation}</p>
             </div>
-            <span className="text-[9px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded font-medium shrink-0">
-              প্রোফাইল
-            </span>
+            <span className="text-[9px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded font-medium shrink-0">প্রোফাইল</span>
           </Link>
 
           <button
@@ -425,17 +414,28 @@ export function Sidebar() {
             <span>লগআউট করুন</span>
             <LogOut className="w-3.5 h-3.5 text-red-400" />
           </button>
+
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              {activeDepartment.shortTitle} ডেস্ক সক্রিয়
+            </span>
+            <span className="text-amber-300 font-mono text-[10px] bg-emerald-900/60 px-1.5 py-0.5 rounded">
+              মডুলার
+            </span>
+          </div>
         </div>
       </aside>
 
       {/* =========================================
-          2. DESKTOP SIDEBAR
+          2. DESKTOP SIDEBAR (HIDDEN ON MOBILE)
           ========================================= */}
       <aside
         className={`hidden md:flex flex-col bg-emerald-950 text-emerald-50 shrink-0 border-r border-emerald-900 shadow-xl min-h-screen transition-all duration-300 ${
           isCollapsed ? "w-20" : "w-64"
         }`}
       >
+        {/* Brand Header */}
         <div className="p-4 border-b border-emerald-900/80 bg-emerald-900/40">
           <div className="flex items-center space-x-3">
             <img
@@ -456,15 +456,21 @@ export function Sidebar() {
           </div>
         </div>
 
-        {renderDepartmentSelector(false)}
+        {/* Desktop Department Switcher Grid */}
+        {renderDepartmentSwitcher(false)}
+
+        {/* Desktop Navigation Links (Clean 3-5 items) */}
         {renderNavLinks(false)}
 
+        {/* Desktop Footer & Collapse Toggle */}
         <div className="p-3 border-t border-emerald-900/80 bg-emerald-900/30 text-xs text-emerald-300/70 space-y-2">
           {!isCollapsed ? (
             <div>
+              {/* Active User Mini Profile Link */}
               <Link
                 href="/profile"
                 className="flex items-center gap-2 p-2 rounded-xl bg-emerald-900/70 hover:bg-emerald-800/90 border border-emerald-800/80 transition text-left mb-2"
+                title="আমার প্রোফাইল দেখুন ও এডিট করুন"
               >
                 <div className="w-7 h-7 rounded-lg bg-emerald-800 flex items-center justify-center shrink-0">
                   <CurrentUserIcon className="w-4 h-4 text-amber-300" />
@@ -473,9 +479,7 @@ export function Sidebar() {
                   <p className="text-xs font-bold text-white truncate">{currentUser?.name}</p>
                   <p className="text-[10px] text-amber-300 truncate">{currentUser?.designation}</p>
                 </div>
-                <span className="text-[9px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded font-medium shrink-0">
-                  প্রোফাইল
-                </span>
+                <span className="text-[9px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded font-medium shrink-0">প্রোফাইল</span>
               </Link>
 
               <button
@@ -485,6 +489,16 @@ export function Sidebar() {
                 <span>লগআউট করুন</span>
                 <LogOut className="w-3.5 h-3.5 text-red-400" />
               </button>
+
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  {activeDepartment.shortTitle} ডেস্ক
+                </span>
+                <span className="text-emerald-400 font-mono text-[10px] bg-emerald-900/60 px-1.5 py-0.5 rounded">
+                  মডুলার
+                </span>
+              </div>
             </div>
           ) : (
             <button
