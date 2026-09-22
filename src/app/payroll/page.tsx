@@ -1346,7 +1346,10 @@ export default function PayrollPage() {
             if (e.target === e.currentTarget) setPaySlipData(null);
           }}
         >
-          <div className="relative bg-white text-zinc-900 w-full max-w-lg rounded-2xl shadow-2xl border border-zinc-300 my-4 sm:my-6 overflow-hidden print:m-0 print:shadow-none print:border-none print:w-full print:max-w-none">
+          <div
+            className="relative bg-white text-zinc-950 w-full max-w-lg rounded-2xl shadow-2xl border border-zinc-300 my-4 sm:my-6 overflow-hidden print:m-0 print:shadow-none print:border-none print:w-full print:max-w-none printable-sheet"
+            style={{ color: "#09090b", backgroundColor: "#ffffff" }}
+          >
             {/* Top Bar Controls */}
             <div className="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-zinc-200 pb-3 pt-3 px-5 flex items-center justify-between gap-2 print:hidden shadow-xs">
               <button

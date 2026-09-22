@@ -77,33 +77,182 @@ input, select, textarea {
   color: #ffffff !important;
 }
 
-/* Global High-Contrast Text Fixes in Dark Mode */
-.dark .text-zinc-400:not([class*="dark:text-"]) {
+/* Global High-Contrast Text Fixes in Dark Mode (Exclude printable sheets/receipts) */
+.dark .text-zinc-400:not(.printable-sheet *):not([class*="dark:text-"]) {
   color: #94a3b8 !important; /* slate-400 */
 }
 
-.dark .text-zinc-500:not([class*="dark:text-"]) {
+.dark .text-zinc-500:not(.printable-sheet *):not([class*="dark:text-"]) {
   color: #cbd5e1 !important; /* slate-300 - clearly readable */
 }
 
-.dark .text-zinc-600:not([class*="dark:text-"]) {
+.dark .text-zinc-600:not(.printable-sheet *):not([class*="dark:text-"]) {
   color: #e2e8f0 !important; /* slate-200 - high contrast */
 }
 
-.dark .text-zinc-700:not([class*="dark:text-"]) {
+.dark .text-zinc-700:not(.printable-sheet *):not([class*="dark:text-"]) {
   color: #f1f5f9 !important; /* slate-100 - bright text */
 }
 
-.dark .text-zinc-800:not([class*="dark:text-"]) {
+.dark .text-zinc-800:not(.printable-sheet *):not([class*="dark:text-"]) {
   color: #f8fafc !important; /* slate-50 */
 }
 
-.dark .text-zinc-900:not([class*="dark:text-"]) {
+.dark .text-zinc-900:not(.printable-sheet *):not([class*="dark:text-"]) {
   color: #ffffff !important; /* white */
 }
 
-.dark th:not([class*="dark:text-"]) {
+.dark th:not(.printable-sheet *):not([class*="dark:text-"]) {
   color: #e2e8f0 !important;
+}
+
+/* ==========================================================
+   PRINTABLE SHEETS & LIGHT MODALS IN DARK MODE (FIX FOR UNREADABLE / INVISIBLE TEXT)
+   ========================================================== */
+.printable-sheet,
+.dark .printable-sheet {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.printable-sheet *,
+.dark .printable-sheet * {
+  color: #0f172a;
+}
+
+.printable-sheet p,
+.dark .printable-sheet p,
+.printable-sheet span,
+.dark .printable-sheet span,
+.printable-sheet div,
+.dark .printable-sheet div,
+.printable-sheet td,
+.dark .printable-sheet td,
+.printable-sheet b,
+.dark .printable-sheet b,
+.printable-sheet strong,
+.dark .printable-sheet strong,
+.printable-sheet h1,
+.dark .printable-sheet h1,
+.printable-sheet h2,
+.dark .printable-sheet h2,
+.printable-sheet h3,
+.dark .printable-sheet h3 {
+  color: #0f172a;
+}
+
+/* Specific colored elements inside printable sheets */
+.printable-sheet .text-white,
+.dark .printable-sheet .text-white,
+.printable-sheet thead th,
+.dark .printable-sheet thead th,
+.printable-sheet thead tr,
+.dark .printable-sheet thead tr,
+.printable-sheet button.bg-emerald-700,
+.dark .printable-sheet button.bg-emerald-700,
+.printable-sheet button.bg-emerald-700 *,
+.dark .printable-sheet button.bg-emerald-700 *,
+.printable-sheet button.bg-emerald-800,
+.dark .printable-sheet button.bg-emerald-800,
+.printable-sheet button.bg-emerald-800 *,
+.dark .printable-sheet button.bg-emerald-800 * {
+  color: #ffffff !important;
+}
+
+.printable-sheet .text-emerald-950,
+.dark .printable-sheet .text-emerald-950 {
+  color: #022c22 !important;
+}
+
+.printable-sheet .text-emerald-900,
+.dark .printable-sheet .text-emerald-900 {
+  color: #064e3b !important;
+}
+
+.printable-sheet .text-emerald-800,
+.dark .printable-sheet .text-emerald-800 {
+  color: #065f46 !important;
+}
+
+.printable-sheet .text-emerald-700,
+.dark .printable-sheet .text-emerald-700 {
+  color: #047857 !important;
+}
+
+.printable-sheet .text-emerald-600,
+.dark .printable-sheet .text-emerald-600 {
+  color: #059669 !important;
+}
+
+.printable-sheet .text-rose-700,
+.dark .printable-sheet .text-rose-700,
+.printable-sheet .text-rose-600,
+.dark .printable-sheet .text-rose-600,
+.printable-sheet .text-red-700,
+.dark .printable-sheet .text-red-700,
+.printable-sheet .text-red-800,
+.dark .printable-sheet .text-red-800 {
+  color: #b91c1c !important;
+}
+
+.printable-sheet .text-amber-800,
+.dark .printable-sheet .text-amber-800,
+.printable-sheet .text-amber-700,
+.dark .printable-sheet .text-amber-700 {
+  color: #b45309 !important;
+}
+
+.printable-sheet .text-zinc-900,
+.dark .printable-sheet .text-zinc-900,
+.printable-sheet .text-zinc-800,
+.dark .printable-sheet .text-zinc-800,
+.printable-sheet .text-zinc-950,
+.dark .printable-sheet .text-zinc-950 {
+  color: #09090b !important;
+}
+
+.printable-sheet .text-zinc-700,
+.dark .printable-sheet .text-zinc-700 {
+  color: #334155 !important;
+}
+
+.printable-sheet .text-zinc-600,
+.dark .printable-sheet .text-zinc-600 {
+  color: #475569 !important;
+}
+
+.printable-sheet .text-zinc-500,
+.dark .printable-sheet .text-zinc-500 {
+  color: #64748b !important;
+}
+
+.printable-sheet .bg-white,
+.dark .printable-sheet .bg-white {
+  background-color: #ffffff !important;
+}
+
+.printable-sheet .bg-zinc-100,
+.dark .printable-sheet .bg-zinc-100 {
+  background-color: #f1f5f9 !important;
+}
+
+.printable-sheet .bg-emerald-50,
+.dark .printable-sheet .bg-emerald-50,
+.printable-sheet .bg-emerald-50\/70,
+.dark .printable-sheet .bg-emerald-50\/70,
+.printable-sheet .bg-emerald-50\/50,
+.dark .printable-sheet .bg-emerald-50\/50 {
+  background-color: #ecfdf5 !important;
+}
+
+.printable-sheet .border-zinc-300,
+.dark .printable-sheet .border-zinc-300 {
+  border-color: #cbd5e1 !important;
+}
+
+.printable-sheet .border-zinc-200,
+.dark .printable-sheet .border-zinc-200 {
+  border-color: #e2e8f0 !important;
 }
 
 html.dark,

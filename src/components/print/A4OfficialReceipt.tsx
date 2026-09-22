@@ -64,7 +64,7 @@ export function A4OfficialReceipt({ invoice, institution, onClose }: A4ReceiptPr
   };
 
   const renderReceiptCopy = (copyTitle: string) => (
-    <div className="border-2 border-emerald-900 rounded-xl p-5 bg-white relative">
+    <div className="border-2 border-emerald-900 rounded-xl p-5 bg-white relative" style={{ color: "#09090b", backgroundColor: "#ffffff" }}>
       {/* Background Watermark */}
       <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none select-none">
         <span className="text-7xl font-bold font-arabic">دار العلوم</span>
@@ -228,7 +228,10 @@ export function A4OfficialReceipt({ invoice, institution, onClose }: A4ReceiptPr
         if (e.target === e.currentTarget && onClose) onClose();
       }}
     >
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 my-2 sm:my-4 print:p-0 print:shadow-none print:max-w-none print:m-0 print:border-none">
+      <div
+        className="relative bg-white text-zinc-950 rounded-2xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 my-2 sm:my-4 print:p-0 print:shadow-none print:max-w-none print:m-0 print:border-none printable-sheet"
+        style={{ color: "#09090b", backgroundColor: "#ffffff" }}
+      >
         {/* Sticky Top Bar Controls */}
         <div className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-zinc-200 pb-3 pt-1 -mt-1 mb-4 flex items-center justify-between gap-2 shadow-xs print:hidden">
           <div className="flex items-center gap-2">

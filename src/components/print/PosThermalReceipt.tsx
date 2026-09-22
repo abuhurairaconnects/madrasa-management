@@ -70,7 +70,10 @@ export function PosThermalReceipt({ invoice, institution, onClose }: PosReceiptP
         if (e.target === e.currentTarget && onClose) onClose();
       }}
     >
-      <div className="relative bg-white text-zinc-900 rounded-2xl shadow-2xl max-w-sm w-full p-4 sm:p-5 my-2 sm:my-4 print:p-0 print:shadow-none print:w-full print:max-w-none print:m-0">
+      <div
+        className="relative bg-white text-zinc-950 rounded-2xl shadow-2xl max-w-sm w-full p-4 sm:p-5 my-2 sm:my-4 print:p-0 print:shadow-none print:w-full print:max-w-none print:m-0 printable-sheet"
+        style={{ color: "#09090b", backgroundColor: "#ffffff" }}
+      >
         {/* Sticky Top Bar Controls */}
         <div className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-zinc-200 pb-3 pt-1 -mt-1 mb-3 flex items-center justify-between gap-2 shadow-xs print:hidden">
           <div className="flex items-center gap-1.5">
