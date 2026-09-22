@@ -55,26 +55,6 @@ const departmentNavItems: Record<UserRole, NavItem[]> = {
       badge: "সেন্ট্রাল",
     },
     {
-      nameBn: "হিসাব ও অর্থ বিভাগ",
-      href: "/accounts",
-      icon: Landmark,
-      badge: "হিসাব",
-      subItems: [
-        {
-          nameBn: "শরীয়াহ ফান্ড ও খতিয়ান",
-          href: "/accounts",
-          icon: Landmark,
-          badge: "তহবিল",
-        },
-        {
-          nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
-          href: "/payroll",
-          icon: Banknote,
-          badge: "বেতন",
-        },
-      ],
-    },
-    {
       nameBn: "মাদ্রাসার প্রোফাইল",
       href: "/profile",
       icon: Building,
@@ -107,24 +87,16 @@ const departmentNavItems: Record<UserRole, NavItem[]> = {
       badge: "রসিদ",
     },
     {
-      nameBn: "হিসাব ও তহবিল খতিয়ান",
+      nameBn: "শরীয়াহ ফান্ড ও খতিয়ান",
       href: "/accounts",
       icon: Landmark,
-      badge: "হিসাব",
-      subItems: [
-        {
-          nameBn: "শরীয়াহ ফান্ড ও খতিয়ান",
-          href: "/accounts",
-          icon: Landmark,
-          badge: "তহবিল",
-        },
-        {
-          nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
-          href: "/payroll",
-          icon: Banknote,
-          badge: "বেতন",
-        },
-      ],
+      badge: "তহবিল",
+    },
+    {
+      nameBn: "কর্মকর্তা ও কর্মচারী বেতন",
+      href: "/payroll",
+      icon: Banknote,
+      badge: "বেতন",
     },
     {
       nameBn: "সম্পদ ও মালামাল স্টক",
