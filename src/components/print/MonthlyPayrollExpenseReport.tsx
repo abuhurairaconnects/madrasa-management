@@ -42,7 +42,12 @@ const ROLE_BN: Record<string, string> = {
   NAZIM_E_TALIMAT: "নাজেমে তালিমাত ও প্রধান শিক্ষক",
   ACCOUNTANT: "প্রধান হিসাবরক্ষক ও ক্যাশিয়ার",
   TEACHER: "উস্তাদ / শিক্ষক",
-  HOSTEL_SUPER: "হোস্টেল সুপার / স্টাফ",
+  HOSTEL_SUPER: "হোস্টেল সুপার / বোর্ডিং",
+  COOK: "বাবুর্চি / সহকারী",
+  GUARD: "নিরাপত্তা প্রহরী / দারোয়ান",
+  KHADEM: "খাদেম / স্টাফ",
+  STAFF: "সাধারণ কর্মচারী",
+  OTHER: "অন্যান্য কর্মচারী",
 };
 
 export function MonthlyPayrollExpenseReport({
@@ -219,7 +224,7 @@ export function MonthlyPayrollExpenseReport({
                 {salaries.map((s, idx) => {
                   const isPaid = s.paymentStatus === "PAID";
                   const allowanceTotal = s.housingAllowance + s.foodAllowance;
-                  const roleLabel = ROLE_BN[s.user.role] || s.user.role;
+                  const roleLabel = (s.user?.role && ROLE_BN[s.user.role]) || s.user?.role || "কর্মকর্তা/কর্মচারী";
 
                   return (
                     <tr key={s.id || idx} className="hover:bg-zinc-50/70">
@@ -227,11 +232,11 @@ export function MonthlyPayrollExpenseReport({
                         {toBengaliNumber(idx + 1)}
                       </td>
                       <td className="py-2 px-3 border border-zinc-300">
-                        <div className="font-bold text-zinc-900">{s.user.name}</div>
+                        <div className="font-bold text-zinc-900">{s.user?.name || "নাম পাওয়া যায়নি"}</div>
                         <div className="text-[10px] text-emerald-800 font-medium">{roleLabel}</div>
                       </td>
                       <td className="py-2 px-2 font-mono text-[10px] text-zinc-600 border border-zinc-300">
-                        {s.user.phone ? toBengaliNumber(s.user.phone) : "—"}
+                        {s.user?.phone ? toBengaliNumber(s.user.phone) : "—"}
                       </td>
                       <td className="py-2 px-2 text-right font-medium border border-zinc-300">
                         {formatTaka(s.basicSalary)}

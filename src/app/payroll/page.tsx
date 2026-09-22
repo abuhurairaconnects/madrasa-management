@@ -22,6 +22,7 @@ import {
   Check,
   ChevronRight,
   ShieldCheck,
+  Pencil,
 } from "lucide-react";
 import { toBengaliNumber, formatTaka, numberToBengaliWords } from "@/lib/formatters";
 import { MonthlyPayrollExpenseReport } from "@/components/print/MonthlyPayrollExpenseReport";
@@ -46,7 +47,12 @@ const ROLE_BN: Record<string, string> = {
   NAZIM_E_TALIMAT: "নাজেমে তালিমাত ও প্রধান শিক্ষক",
   ACCOUNTANT: "প্রধান হিসাবরক্ষক ও ক্যাশিয়ার",
   TEACHER: "উস্তাদ / শিক্ষক",
-  HOSTEL_SUPER: "হোস্টেল সুপার / স্টাফ",
+  HOSTEL_SUPER: "হোস্টেল সুপার / বোর্ডিং",
+  COOK: "বাবুর্চি / সহকারী",
+  GUARD: "নিরাপত্তা প্রহরী / দারোয়ান",
+  KHADEM: "খাদেম / স্টাফ",
+  STAFF: "সাধারণ কর্মচারী",
+  OTHER: "অন্যান্য কর্মচারী",
 };
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -65,6 +71,9 @@ export default function PayrollPage() {
   const [showPdfReport, setShowPdfReport] = useState(false);
   const [paySlipData, setPaySlipData] = useState<any | null>(null);
 
+  // Mode: "MANUAL" (direct typing) vs "SELECT" (from dropdown)
+  const [entryMode, setEntryMode] = useState<"MANUAL" | "SELECT">("MANUAL");
+
   // For viewing PDF of a historic month directly
   const [reportMonth, setReportMonth] = useState("সেপ্টেম্বর");
   const [reportYear, setReportYear] = useState(2026);
@@ -76,6 +85,9 @@ export default function PayrollPage() {
   // Form: Salary Entry
   const [salaryForm, setSalaryForm] = useState({
     userId: "",
+    manualName: "",
+    manualRole: "TEACHER",
+    phone: "",
     basicSalary: 16000,
     housingAllowance: 2500,
     foodAllowance: 2000,
@@ -117,14 +129,79 @@ export default function PayrollPage() {
     loadData();
   }, [selectedMonth, selectedYear]);
 
-  // When staff selection changes in form, auto-fill default salary
+  // Open Create/Edit modal with proper mode and data
+  const handleOpenCreateModal = (existingSalary?: any) => {
+    if (existingSalary) {
+      setEntryMode("SELECT");
+      setSalaryForm({
+        userId: existingSalary.userId,
+        manualName: existingSalary.user?.name || "",
+        manualRole: existingSalary.user?.role || "TEACHER",
+        phone: existingSalary.user?.phone || "",
+        basicSalary: existingSalary.basicSalary,
+        housingAllowance: existingSalary.housingAllowance,
+        foodAllowance: existingSalary.foodAllowance,
+        bonus: existingSalary.bonus,
+        deduction: existingSalary.deduction,
+        paymentStatus: existingSalary.paymentStatus,
+        paymentMethod: existingSalary.paymentMethod,
+        paymentDate: existingSalary.paymentDate || new Date().toISOString().split("T")[0],
+        notes: existingSalary.notes || "",
+      });
+    } else {
+      // Direct manual writing by default
+      setEntryMode("MANUAL");
+      setSalaryForm({
+        userId: "",
+        manualName: "",
+        manualRole: "TEACHER",
+        phone: "",
+        basicSalary: 16000,
+        housingAllowance: 2500,
+        foodAllowance: 2000,
+        bonus: 0,
+        deduction: 0,
+        paymentStatus: "PAID",
+        paymentMethod: "CASH",
+        paymentDate: new Date().toISOString().split("T")[0],
+        notes: "মাসিক নিয়মিত বেতন প্রদান",
+      });
+    }
+    setShowCreateModal(true);
+  };
+
+  // Handle manual name input with autocomplete detection
+  const handleManualNameChange = (name: string) => {
+    const match = data?.staffUsers?.find(
+      (u: any) => u.name.trim().toLowerCase() === name.trim().toLowerCase()
+    );
+    if (match) {
+      setSalaryForm((prev) => ({
+        ...prev,
+        manualName: name,
+        userId: match.id,
+        manualRole: match.role || prev.manualRole,
+        phone: match.phone || prev.phone,
+      }));
+    } else {
+      setSalaryForm((prev) => ({
+        ...prev,
+        manualName: name,
+        userId: "",
+      }));
+    }
+  };
+
+  // When staff selection changes in dropdown, auto-fill default salary
   const handleStaffSelect = (userId: string) => {
-    setSalaryForm((prev) => ({ ...prev, userId }));
-    // If that user already has salary record for this month, load it
+    const selectedUser = data?.staffUsers?.find((u: any) => u.id === userId);
     const existing = data?.salaries?.find((s: any) => s.userId === userId);
     if (existing) {
       setSalaryForm({
         userId,
+        manualName: existing.user?.name || selectedUser?.name || "",
+        manualRole: existing.user?.role || selectedUser?.role || "TEACHER",
+        phone: existing.user?.phone || selectedUser?.phone || "",
         basicSalary: existing.basicSalary,
         housingAllowance: existing.housingAllowance,
         foodAllowance: existing.foodAllowance,
@@ -135,25 +212,46 @@ export default function PayrollPage() {
         paymentDate: existing.paymentDate || new Date().toISOString().split("T")[0],
         notes: existing.notes || "",
       });
+    } else {
+      setSalaryForm((prev) => ({
+        ...prev,
+        userId,
+        manualName: selectedUser?.name || "",
+        manualRole: selectedUser?.role || "TEACHER",
+        phone: selectedUser?.phone || "",
+      }));
     }
   };
 
   const handleCreateSalary = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (entryMode === "MANUAL" && !salaryForm.manualName.trim()) {
+      alert("দয়া করে কর্মকর্তা বা কর্মচারীর নাম লিখুন");
+      return;
+    }
+    if (entryMode === "SELECT" && !salaryForm.userId) {
+      alert("দয়া করে তালিকা থেকে একজন স্টাফ নির্বাচন করুন");
+      return;
+    }
+
     try {
       const res = await fetch("/api/payroll", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "CREATE_SALARY",
+          entryMode,
           month: selectedMonth,
           year: selectedYear,
           ...salaryForm,
         }),
       });
-      if (res.ok) {
+      const resJson = await res.json();
+      if (resJson.success) {
         setShowCreateModal(false);
         loadData();
+      } else {
+        alert(resJson.error || "বেতন সংরক্ষণ করতে সমস্যা হয়েছে");
       }
     } catch (err) {
       console.error("Create salary failed:", err);
@@ -297,11 +395,11 @@ export default function PayrollPage() {
           </button>
 
           <button
-            onClick={() => setShowCreateModal(true)}
+            onClick={() => handleOpenCreateModal()}
             className="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-xl shadow-md transition-all text-xs sm:text-sm cursor-pointer border border-emerald-500/50"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>বেতন এন্ট্রি</span>
+            <span>বেতন এন্ট্রি ও নাম লিখুন</span>
           </button>
 
           <button
@@ -490,7 +588,7 @@ export default function PayrollPage() {
                   <span>এক ক্লিকে সকল স্টাফের বেতন তৈরি করুন</span>
                 </button>
                 <button
-                  onClick={() => setShowCreateModal(true)}
+                  onClick={() => handleOpenCreateModal()}
                   className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-zinc-300"
                 >
                   <PlusCircle className="w-4 h-4" />
@@ -519,13 +617,13 @@ export default function PayrollPage() {
                     {data.salaries.map((s: any) => {
                       const isPaid = s.paymentStatus === "PAID";
                       const allowanceTotal = s.housingAllowance + s.foodAllowance;
-                      const roleLabel = ROLE_BN[s.user?.role] || s.user?.role;
+                      const roleLabel = (s.user?.role && ROLE_BN[s.user.role]) || s.user?.role || "কর্মকর্তা/কর্মচারী";
 
                       return (
                         <tr key={s.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition">
                           <td className="py-3 px-4">
                             <div className="font-bold text-zinc-900 dark:text-zinc-100 text-sm">
-                              {s.user?.name}
+                              {s.user?.name || "নাম পাওয়া যায়নি"}
                             </div>
                             <div className="text-[10px] text-zinc-500 font-mono">
                               {s.user?.phone ? toBengaliNumber(s.user.phone) : "—"}
@@ -583,6 +681,14 @@ export default function PayrollPage() {
                                   পরিশোধ
                                 </button>
                               )}
+                              <button
+                                onClick={() => handleOpenCreateModal(s)}
+                                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:text-emerald-300 text-[11px] font-bold px-2 py-1 rounded-lg border border-emerald-300 dark:border-emerald-800 flex items-center gap-1 transition cursor-pointer"
+                                title="বেতন ও তথ্য পরিবর্তন করুন"
+                              >
+                                <Pencil className="w-3 h-3 text-emerald-600" />
+                                <span>সম্পাদনা</span>
+                              </button>
                               <button
                                 onClick={() => setPaySlipData(s)}
                                 className="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-200 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-zinc-300 dark:border-zinc-700 flex items-center gap-1 transition cursor-pointer"
@@ -771,22 +877,140 @@ export default function PayrollPage() {
             </div>
 
             <form onSubmit={handleCreateSalary} className="p-5 sm:p-6 space-y-4 text-xs">
+              {/* Mode Toggle Pills */}
               <div>
-                <label className="block font-bold text-zinc-800 dark:text-zinc-200 mb-1">
-                  উস্তাদ / কর্মকর্তা / কর্মচারী নির্বাচন করুন *
-                </label>
-                <select
-                  required
-                  value={salaryForm.userId}
-                  onChange={(e) => handleStaffSelect(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                >
-                  {data?.staffUsers?.map((u: any) => (
-                    <option key={u.id} value={u.id}>
-                      {u.name} — ({ROLE_BN[u.role] || u.role})
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-bold text-zinc-800 dark:text-zinc-200">
+                    কর্মকর্তা / কর্মচারীর তথ্য *
+                  </span>
+                  <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">
+                    {entryMode === "MANUAL" ? "✍️ সরাসরি টাইপ করছেন" : "👥 তালিকা থেকে বাছাই"}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl border border-zinc-200 dark:border-zinc-700 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setEntryMode("MANUAL")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      entryMode === "MANUAL"
+                        ? "bg-emerald-700 text-white shadow-xs"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <span>✍️ সরাসরি নাম লিখুন (ম্যানুয়ালি)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEntryMode("SELECT");
+                      if (data?.staffUsers?.length > 0 && !salaryForm.userId) {
+                        handleStaffSelect(data.staffUsers[0].id);
+                      }
+                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      entryMode === "SELECT"
+                        ? "bg-emerald-700 text-white shadow-xs"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <span>👥 তালিকা থেকে নির্বাচন ({toBengaliNumber(data?.staffUsers?.length || 0)})</span>
+                  </button>
+                </div>
+
+                {entryMode === "MANUAL" ? (
+                  <div className="space-y-3 bg-emerald-50/60 dark:bg-emerald-950/20 p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-800/60">
+                    <div>
+                      <label className="block font-bold text-zinc-900 dark:text-zinc-100 mb-1">
+                        কর্মকর্তা / কর্মচারীর পূর্ণ নাম (ম্যানুয়ালি লিখুন) *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        list="payroll-staff-names-list"
+                        value={salaryForm.manualName}
+                        onChange={(e) => handleManualNameChange(e.target.value)}
+                        placeholder="যেমন: মাওলানা আব্দুর রহমান, ক্বারী ইউসুফ, বাবুর্চি সালাম..."
+                        className="w-full p-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                      <datalist id="payroll-staff-names-list">
+                        {data?.staffUsers?.map((u: any) => (
+                          <option key={u.id} value={u.name}>
+                            {ROLE_BN[u.role] || u.role} {u.phone ? `(${u.phone})` : ""}
+                          </option>
+                        ))}
+                      </datalist>
+                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 block">
+                        💡 এখানে যেকোনো শিক্ষক, মুহতামিম, খাদেম বা কর্মচারীর নাম লিখে সরাসরি বেতন এন্ট্রি দেওয়া যাবে।
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block font-bold text-zinc-800 dark:text-zinc-200 mb-1">
+                          পদবী ও দায়িত্ব *
+                        </label>
+                        <select
+                          value={salaryForm.manualRole}
+                          onChange={(e) => setSalaryForm({ ...salaryForm, manualRole: e.target.value })}
+                          className="w-full p-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                        >
+                          <option value="TEACHER">উস্তাদ / শিক্ষক</option>
+                          <option value="NAZIM_E_TALIMAT">নাজেমে তালিমাত / প্রধান শিক্ষক</option>
+                          <option value="MUHTAMIM">মুহতামিম / সহকারী মুহতামিম</option>
+                          <option value="ACCOUNTANT">হিসাবরক্ষক ও ক্যাশিয়ার</option>
+                          <option value="HOSTEL_SUPER">হোস্টেল সুপার / বোর্ডিং</option>
+                          <option value="COOK">বাবুর্চি / সহকারী</option>
+                          <option value="GUARD">নিরাপত্তা প্রহরী / দারোয়ান</option>
+                          <option value="KHADEM">খাদেম / স্টাফ</option>
+                          <option value="OTHER">অন্যান্য কর্মচারী</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-zinc-800 dark:text-zinc-200 mb-1">
+                          মোবাইল নম্বর (ঐচ্ছিক)
+                        </label>
+                        <input
+                          type="text"
+                          value={salaryForm.phone}
+                          onChange={(e) => setSalaryForm({ ...salaryForm, phone: e.target.value })}
+                          placeholder="017xxxxxxxx"
+                          className="w-full p-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <label className="block font-bold text-zinc-800 dark:text-zinc-200 mb-1">
+                      সংরক্ষিত স্টাফ তালিকা থেকে নির্বাচন করুন *
+                    </label>
+                    <select
+                      required
+                      value={salaryForm.userId}
+                      onChange={(e) => handleStaffSelect(e.target.value)}
+                      className="w-full p-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    >
+                      <option value="">-- স্টাফ নির্বাচন করুন --</option>
+                      {data?.staffUsers?.map((u: any) => (
+                        <option key={u.id} value={u.id}>
+                          {u.name} — ({ROLE_BN[u.role] || u.role})
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500">
+                      <span>তালিকায় কাঙ্ক্ষিত নাম না পেলে?</span>
+                      <button
+                        type="button"
+                        onClick={() => setEntryMode("MANUAL")}
+                        className="text-emerald-700 dark:text-emerald-400 font-bold hover:underline cursor-pointer"
+                      >
+                        ✍️ সরাসরি নাম ম্যানুয়ালি লিখুন
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -980,10 +1204,14 @@ export default function PayrollPage() {
                     className="w-full p-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   >
                     <option value="TEACHER">উস্তাদ / শিক্ষক</option>
-                    <option value="NAZIM_E_TALIMAT">নাজেমে তালিমাত / শিক্ষা সচিব</option>
-                    <option value="ACCOUNTANT">হিসাবরক্ষক ও ক্যাশিয়ার</option>
-                    <option value="HOSTEL_SUPER">হোস্টেল সুপার / বাবুর্চি / খাদেম</option>
+                    <option value="NAZIM_E_TALIMAT">নাজেমে তালিমাত / প্রধান শিক্ষক</option>
                     <option value="MUHTAMIM">মুহতামিম / সহ-মুহতামিম</option>
+                    <option value="ACCOUNTANT">হিসাবরক্ষক ও ক্যাশিয়ার</option>
+                    <option value="HOSTEL_SUPER">হোস্টেল সুপার / বোর্ডিং</option>
+                    <option value="COOK">বাবুর্চি / সহকারী</option>
+                    <option value="GUARD">নিরাপত্তা প্রহরী / দারোয়ান</option>
+                    <option value="KHADEM">খাদেম / স্টাফ</option>
+                    <option value="OTHER">অন্যান্য কর্মচারী</option>
                   </select>
                 </div>
 

@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       prisma.user.findMany({
         where: {
           institutionId,
-          role: { in: ["TEACHER", "MUHTAMIM", "NAZIM_E_TALIMAT", "ACCOUNTANT", "HOSTEL_SUPER"] },
+          role: { in: ["TEACHER", "MUHTAMIM", "NAZIM_E_TALIMAT", "ACCOUNTANT", "HOSTEL_SUPER", "COOK", "GUARD", "KHADEM", "STAFF", "OTHER"] },
         },
         select: { id: true, name: true, role: true, phone: true, username: true },
         orderBy: { createdAt: "asc" },
@@ -172,6 +172,10 @@ export async function POST(request: NextRequest) {
     if (action === "CREATE_SALARY") {
       const {
         userId,
+        entryMode,
+        manualName,
+        manualRole,
+        phone,
         month,
         year,
         basicSalary,
@@ -185,6 +189,66 @@ export async function POST(request: NextRequest) {
         notes,
       } = body;
 
+      let finalUserId = userId;
+
+      // If manual mode or manualName provided, ensure staff user exists in this madrasa
+      if ((entryMode === "MANUAL" || !finalUserId) && manualName && manualName.trim()) {
+        const trimmedName = manualName.trim();
+        const trimmedPhone = phone ? phone.trim() : null;
+        const role = manualRole || "TEACHER";
+
+        // Check if user already exists with this name in this institution
+        let staffUser = await prisma.user.findFirst({
+          where: {
+            institutionId,
+            name: trimmedName,
+          },
+        });
+
+        if (!staffUser) {
+          // Generate safe unique username
+          const baseUsername = trimmedPhone
+            ? `staff_${trimmedPhone.replace(/\D/g, "")}`
+            : `staff_${Date.now().toString(36)}`;
+          let usernameCandidate = baseUsername;
+          const existingUsername = await prisma.user.findUnique({ where: { username: usernameCandidate } });
+          if (existingUsername) {
+            usernameCandidate = `staff_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+          }
+
+          staffUser = await prisma.user.create({
+            data: {
+              institutionId,
+              name: trimmedName,
+              role,
+              phone: trimmedPhone,
+              username: usernameCandidate,
+              password: "password123",
+            },
+          });
+        } else {
+          // Update phone or role if provided
+          const updateData: any = {};
+          if (trimmedPhone && !staffUser.phone) updateData.phone = trimmedPhone;
+          if (manualRole && staffUser.role !== manualRole) updateData.role = manualRole;
+          if (Object.keys(updateData).length > 0) {
+            staffUser = await prisma.user.update({
+              where: { id: staffUser.id },
+              data: updateData,
+            });
+          }
+        }
+
+        finalUserId = staffUser.id;
+      }
+
+      if (!finalUserId) {
+        return NextResponse.json(
+          { success: false, error: "কর্মকর্তা বা কর্মচারীর নাম প্রদান বা নির্বাচন করুন" },
+          { status: 400 }
+        );
+      }
+
       const basic = Number(basicSalary) || 0;
       const housing = Number(housingAllowance) || 0;
       const food = Number(foodAllowance) || 0;
@@ -196,7 +260,7 @@ export async function POST(request: NextRequest) {
         where: {
           institutionId_userId_month_year: {
             institutionId,
-            userId,
+            userId: finalUserId,
             month,
             year: Number(year),
           },
@@ -215,7 +279,7 @@ export async function POST(request: NextRequest) {
         },
         create: {
           institutionId,
-          userId,
+          userId: finalUserId,
           month,
           year: Number(year),
           basicSalary: basic,
@@ -256,7 +320,7 @@ export async function POST(request: NextRequest) {
       const staffUsers = await prisma.user.findMany({
         where: {
           institutionId,
-          role: { in: ["TEACHER", "MUHTAMIM", "NAZIM_E_TALIMAT", "ACCOUNTANT", "HOSTEL_SUPER"] },
+          role: { in: ["TEACHER", "MUHTAMIM", "NAZIM_E_TALIMAT", "ACCOUNTANT", "HOSTEL_SUPER", "COOK", "GUARD", "KHADEM", "STAFF", "OTHER"] },
         },
       });
 
