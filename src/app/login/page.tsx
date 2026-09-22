@@ -355,10 +355,10 @@ function LoginForm() {
                   </div>
                   <div>
                     <h4 className="font-bold text-xs text-white group-hover:text-emerald-300 transition">
-                      অভিভাবক পোর্টাল
+                      অভিভাবক পোর্টাল লগইন
                     </h4>
                     <p className="text-[11px] text-zinc-400">
-                      সন্তানের ছবক, হাজিরা ও ফি দেখতে ক্লিক করুন
+                      আপনি কি অভিভাবক? সন্তানের ছবক, হাজিরা ও ফি দেখতে ক্লিক করুন
                     </p>
                   </div>
                 </div>

@@ -61,14 +61,14 @@ export default function GuardianLoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-950 via-slate-900 to-slate-950 text-white flex flex-col justify-between p-4 md:p-6">
       <div className="max-w-md w-full mx-auto my-auto py-6">
-        {/* Return to Madrasa Portal Link */}
+        {/* Return to Madrasa Login */}
         <div className="mb-4">
           <Link
-            href="/"
+            href="/login"
             className="inline-flex items-center gap-1.5 text-xs text-emerald-300/80 hover:text-emerald-200 transition bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-800/60 px-3 py-1.5 rounded-xl"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>মাদ্রাসার মূল ড্যাশবোর্ডে ফিরে যান</span>
+            <span>মাদ্রাসার মূল লগইন পেজে যান</span>
           </Link>
         </div>
 
@@ -152,10 +152,7 @@ export default function GuardianLoginPage() {
             </div>
 
             <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="text-xs text-slate-300 font-semibold">পিন কোড (PIN)</label>
-                <span className="text-[11px] text-emerald-400 font-medium">ডিফল্ট পিন: 1234</span>
-              </div>
+              <label className="block text-xs text-slate-300 mb-1.5 font-semibold">পিন কোড (PIN)</label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
                 <input
@@ -184,6 +181,31 @@ export default function GuardianLoginPage() {
               )}
             </button>
           </form>
+
+          {/* Switch to Madrasa Admin / Muhtamim Login */}
+          <div className="mt-6 pt-5 border-t border-slate-800">
+            <Link
+              href="/login"
+              className="flex items-center justify-between p-3 rounded-2xl bg-amber-950/40 hover:bg-amber-900/50 border border-amber-800/50 transition group"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-900/80 text-amber-300 flex items-center justify-center shrink-0">
+                  <Building className="w-4 h-4 text-amber-400" />
+                </div>
+                <div className="text-left">
+                  <h4 className="font-bold text-xs text-white group-hover:text-amber-300 transition">
+                    মাদ্রাসা প্রশাসন ও শিক্ষক লগইন
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    মুহতামিম, শিক্ষক ও কর্মচারীদের ড্যাশবোর্ড
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs text-amber-400 font-bold group-hover:translate-x-0.5 transition shrink-0">
+                লগইন →
+              </span>
+            </Link>
+          </div>
         </div>
 
         {/* Help Information */}
