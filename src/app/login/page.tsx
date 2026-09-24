@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Building,
@@ -39,7 +39,6 @@ interface InstitutionItem {
 
 function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { setRole } = useRole();
 
   const [mode, setMode] = useState<"LOGIN" | "REGISTER">("LOGIN");
@@ -73,10 +72,13 @@ function LoginForm() {
       })
       .catch(() => {});
 
-    if (searchParams.get("logged_out")) {
-      setSuccessMsg("আপনার অ্যাকাউন্ট থেকে সফলভাবে লগআউট সম্পন্ন হয়েছে।");
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("logged_out")) {
+        setSuccessMsg("আপনার অ্যাকাউন্ট থেকে সফলভাবে লগআউট সম্পন্ন হয়েছে।");
+      }
     }
-  }, [searchParams]);
+  }, []);
 
   // Handle Login
   const handleLogin = async (e: React.FormEvent) => {
