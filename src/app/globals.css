@@ -55,8 +55,12 @@ input, select, textarea {
     color: #64748b !important;
   }
 
-  label {
+  label:not(.dark-surface *) {
     color: #1e293b !important;
+  }
+
+  .dark-surface label {
+    color: #e2e8f0 !important;
   }
 }
 

@@ -217,7 +217,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 text-white flex flex-col justify-between p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen w-full bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 text-white flex flex-col justify-between p-4 sm:p-6 md:p-8 dark-surface">
       {/* Top Header */}
       <div className="max-w-3xl mx-auto w-full flex items-center justify-between py-2 border-b border-emerald-800/40">
         <div className="flex items-center space-x-3">
