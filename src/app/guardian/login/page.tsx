@@ -46,6 +46,13 @@ export default function GuardianLoginPage() {
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("mode") === "register") {
+        setAuthMode("REGISTER");
+      }
+    }
+
     fetch("/api/guardian")
       .then((res) => res.json())
       .then((data) => {

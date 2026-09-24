@@ -343,29 +343,39 @@ function LoginForm() {
               </button>
             </div>
 
-            {/* Guardian Portal Link */}
-            <div className="pt-3 border-t border-zinc-800/80">
-              <Link
-                href="/guardian/login"
-                className="flex items-center justify-between p-3 rounded-2xl bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/60 transition group"
-              >
+            {/* Guardian Portal Link (Login + Register) */}
+            <div className="pt-3 border-t border-zinc-800/80 space-y-2">
+              <div className="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-800/70 space-y-2.5">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-900/80 text-emerald-300 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-900/80 text-emerald-300 flex items-center justify-center shrink-0">
                     <Users className="w-4 h-4 text-emerald-400" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-xs text-white group-hover:text-emerald-300 transition">
-                      অভিভাবক পোর্টাল লগইন
+                    <h4 className="font-bold text-xs text-white">
+                      অভিভাবক পোর্টাল (লগইন ও নতুন অ্যাকাউন্ট)
                     </h4>
-                    <p className="text-[11px] text-zinc-400">
-                      আপনি কি অভিভাবক? সন্তানের ছবক, হাজিরা ও ফি দেখতে ক্লিক করুন
+                    <p className="text-[11px] text-emerald-200/80">
+                      সন্তানের ছবক, হাজিরা ও ফি দেখতে প্রবেশ করুন অথবা নতুন অ্যাকাউন্ট খুলুন
                     </p>
                   </div>
                 </div>
-                <span className="text-xs text-emerald-400 font-semibold group-hover:translate-x-0.5 transition shrink-0">
-                  প্রবেশ →
-                </span>
-              </Link>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    href="/guardian/login"
+                    className="py-2 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs text-center transition flex items-center justify-center gap-1.5 shadow"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>অভিভাবক লগইন</span>
+                  </Link>
+                  <Link
+                    href="/guardian/login?mode=register"
+                    className="py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs text-center transition flex items-center justify-center gap-1.5 shadow"
+                  >
+                    <PlusCircle className="w-3.5 h-3.5" />
+                    <span>অ্যাকাউন্ট খুলুন</span>
+                  </Link>
+                </div>
+              </div>
             </div>
 
             {/* Android APK Direct Download Button */}

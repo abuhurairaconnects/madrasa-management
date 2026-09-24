@@ -2,9 +2,10 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
-RUN npm ci
+RUN npm install --include=dev
 COPY . .
 RUN npx prisma generate
+RUN npx prisma db push --accept-data-loss
 RUN npm run build
 
 FROM node:20-alpine AS runner
