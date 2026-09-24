@@ -127,30 +127,26 @@ export async function POST(request: Request) {
         });
       }
 
-      // Find existing student(s) by studentId, exact/partial nameBn, or guardianPhone
-      let matchedStudents = await prisma.student.findMany({
+      // Extract name and ID if input is formatted like "আনাস মাহমুদ (JAMIA-01-S005)"
+      const idMatch = cleanStudentInput.match(/\(([^)]+)\)/);
+      const extractedId = idMatch && idMatch[1] ? idMatch[1].trim() : cleanStudentInput;
+      const extractedName = cleanStudentInput.replace(/\s*\([^)]*\)\s*/g, "").trim() || cleanStudentInput;
+
+      // Find existing student(s) by studentId, nameBn, or guardianPhone (SQLite compatible)
+      const matchedStudents = await prisma.student.findMany({
         where: {
           institutionId: institution.id,
           OR: [
-            { studentId: { equals: cleanStudentInput, mode: "insensitive" } },
-            { nameBn: { equals: cleanStudentInput } },
+            { studentId: cleanStudentInput },
+            { studentId: cleanStudentInput.toUpperCase() },
+            { studentId: extractedId },
+            { studentId: extractedId.toUpperCase() },
+            { nameBn: cleanStudentInput },
+            { nameBn: extractedName },
             { guardianPhone: cleanPhone },
           ],
         },
       });
-
-      // If no exact match, check if cleanStudentInput contains a studentId like "(STD-...)"
-      if (matchedStudents.length === 0) {
-        const idMatch = cleanStudentInput.match(/\(([^)]+)\)/);
-        if (idMatch && idMatch[1]) {
-          matchedStudents = await prisma.student.findMany({
-            where: {
-              institutionId: institution.id,
-              studentId: idMatch[1].trim(),
-            },
-          });
-        }
-      }
 
       if (matchedStudents.length > 0) {
         // Link matched student(s) to this Guardian account
@@ -216,7 +212,7 @@ export async function POST(request: Request) {
           data: {
             institutionId: institution.id,
             studentId: generatedStudentId,
-            nameBn: cleanStudentInput,
+            nameBn: extractedName,
             fatherName: cleanGuardianName,
             guardianPhone: cleanPhone,
             guardianId: guardian.id,
@@ -361,11 +357,20 @@ export async function POST(request: Request) {
     }
 
     if (!guardian && studentId) {
+      const rawSt = studentId.trim();
+      const idMatch = rawSt.match(/\(([^)]+)\)/);
+      const extractedId = idMatch && idMatch[1] ? idMatch[1].trim() : rawSt;
+      const extractedName = rawSt.replace(/\s*\([^)]*\)\s*/g, "").trim() || rawSt;
+
       const student = await prisma.student.findFirst({
         where: {
           OR: [
-            { studentId: { equals: studentId.trim(), mode: "insensitive" } },
-            { nameBn: { equals: studentId.trim() } },
+            { studentId: rawSt },
+            { studentId: rawSt.toUpperCase() },
+            { studentId: extractedId },
+            { studentId: extractedId.toUpperCase() },
+            { nameBn: rawSt },
+            { nameBn: extractedName },
           ],
         },
         include: {
