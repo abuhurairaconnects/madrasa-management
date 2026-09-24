@@ -89,6 +89,9 @@ export default function GuardianLoginPage() {
 
       if (data.success) {
         localStorage.setItem("guardian_session", JSON.stringify(data));
+        localStorage.removeItem("madrasa_active_institution_id");
+        document.cookie = "madrasa_institution_id=; path=/; max-age=0; SameSite=Lax";
+        document.cookie = "madrasa_user_type=GUARDIAN; path=/; max-age=86400; SameSite=Lax";
         router.push("/guardian");
       } else {
         setError(data.error || "লগইন ব্যর্থ হয়েছে। সঠিক নম্বর বা আইডি দিন।");
@@ -130,6 +133,9 @@ export default function GuardianLoginPage() {
       if (data.success) {
         setSuccessMsg("অভিনন্দন! আপনার অভিভাবক অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে। ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...");
         localStorage.setItem("guardian_session", JSON.stringify(data));
+        localStorage.removeItem("madrasa_active_institution_id");
+        document.cookie = "madrasa_institution_id=; path=/; max-age=0; SameSite=Lax";
+        document.cookie = "madrasa_user_type=GUARDIAN; path=/; max-age=86400; SameSite=Lax";
         setTimeout(() => {
           router.push("/guardian");
         }, 600);

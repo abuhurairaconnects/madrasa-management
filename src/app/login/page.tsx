@@ -119,6 +119,8 @@ function LoginForm() {
 
       // Set cookie directly in browser
       document.cookie = `madrasa_institution_id=${data.institution.id}; path=/; max-age=31536000; SameSite=Lax`;
+      document.cookie = "madrasa_user_type=ADMIN; path=/; max-age=31536000; SameSite=Lax";
+      localStorage.removeItem("guardian_session");
 
       setSuccessMsg(`${data.institution.nameBn} এ সফলভাবে লগইন হয়েছে! ড্যাশবোর্ডে নিয়ে যাওয়া হচ্ছে...`);
       setTimeout(() => {
@@ -156,6 +158,8 @@ function LoginForm() {
       localStorage.setItem("madrasa_active_institution_name", inst.nameBn);
 
       document.cookie = `madrasa_institution_id=${inst.id}; path=/; max-age=31536000; SameSite=Lax`;
+      document.cookie = "madrasa_user_type=ADMIN; path=/; max-age=31536000; SameSite=Lax";
+      localStorage.removeItem("guardian_session");
 
       setSuccessMsg(`${inst.nameBn} এ প্রবেশ করা হয়েছে!`);
       setTimeout(() => {
@@ -206,6 +210,8 @@ function LoginForm() {
       }
 
       document.cookie = `madrasa_institution_id=${data.institution.id}; path=/; max-age=31536000; SameSite=Lax`;
+      document.cookie = "madrasa_user_type=ADMIN; path=/; max-age=31536000; SameSite=Lax";
+      localStorage.removeItem("guardian_session");
 
       setSuccessMsg(`অভিনন্দন! আপনার মাদ্রাসার আইডি তৈরি হয়েছে। ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...`);
       setTimeout(() => {
